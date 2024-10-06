@@ -16,6 +16,10 @@ public class TestDataWriter implements DataWriter {
         }
     }
 
+    public void write(byte[] data, int offset, int length) {
+        out.write(data, offset, length);
+    }
+
     public void write(String data) {
         try {
             out.write(data.getBytes("US-ASCII"));
@@ -27,6 +31,10 @@ public class TestDataWriter implements DataWriter {
     public void newLine() {
         out.write('\r');
         out.write('\n');
+    }
+
+    public byte[] toBytes() {
+        return out.toByteArray();
     }
 
     public String toAsciiString() {

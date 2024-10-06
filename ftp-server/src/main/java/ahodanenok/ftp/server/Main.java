@@ -13,10 +13,9 @@ public class Main {
 
     public static void main(String... args) throws Exception {
         FileStorage storage = new FileSystemFileStorage("D:\\ftp-storage");
-        FtpCommand command = new NameListCommand(storage);
         FtpSessionImpl session = new FtpSessionImpl();
-        FtpRequest request = new DefaultFtpRequest(session, "NLST", new String[] { "dir" });
-        command.handle(request);
+        // new NameListCommand(storage).handle(new DefaultFtpRequest(session, "NLST", new String[] { "dir" }));
+        new RetrieveCommand(storage).handle(new DefaultFtpRequest(session, "RETR", new String[] { "dir/a.txt" }));
         System.out.println("response:");
         System.out.print(session._responseWriter.toString("US-ASCII"));
         System.out.print(session._dataWriter.toString("US-ASCII"));
@@ -35,6 +34,11 @@ public class Main {
                 } catch (IOException e) {
                     throw new UncheckedIOException(e);
                 }
+            }
+
+            @Override
+            public void write(byte[] data, int offset, int length) { //throws IOException {
+                _dataWriter.write(data, offset, length);
             }
 
             @Override

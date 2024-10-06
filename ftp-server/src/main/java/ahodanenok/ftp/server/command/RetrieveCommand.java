@@ -1,26 +1,27 @@
 package ahodanenok.ftp.server.command;
 
-import java.util.function.Consumer;
-import java.util.stream.Stream;
+import java.io.InputStream;
+import java.io.IOException;
 
 import ahodanenok.ftp.server.connection.DataWriter;
+import ahodanenok.ftp.server.storage.FileStorage;
 import ahodanenok.ftp.server.request.FtpReply;
 import ahodanenok.ftp.server.request.FtpRequest;
 import ahodanenok.ftp.server.request.FtpSession;
-import ahodanenok.ftp.server.storage.FileStorage;
 
-public final class NameListCommand implements FtpCommand {
+public class RetrieveCommand implements FtpCommand {
 
-// NLST
+// RETR
 // 125, 150
+//     (110)
 //     226, 250
 //     425, 426, 451
-// 450
-// 500, 501, 502, 421, 530
+// 450, 550
+// 500, 501, 421, 530
 
     private final FileStorage storage;
 
-    public NameListCommand(FileStorage storage) {
+    public RetrieveCommand(FileStorage storage) {
         this.storage = storage;
     }
 
@@ -28,16 +29,14 @@ public final class NameListCommand implements FtpCommand {
     public void handle(FtpRequest request) throws Exception {
         FtpSession session = request.getSession();
 
-        String path;
-        if (request.hasArgument(0)) {
-            path = request.getArgument(0);
-        } else {
-            path = session.getCurrentDirectory();
+        if (!request.hasArgument(0)) {
+            session.getResponseWriter().write(FtpReply.CODE_501);
         }
 
         // todo: check valid path
         // todo: check path exists
-        Stream<String> names = storage.names(path);
+        String path = request.getArgument(0);
+        InputStream in = storage.read(path);
         if (session.isDataConnectionOpened()) {
             session.getResponseWriter().write(FtpReply.CODE_125);
         } else {
@@ -46,21 +45,12 @@ public final class NameListCommand implements FtpCommand {
         }
 
         DataWriter dataWriter = session.getDataWriter();
-        names.forEach(new Consumer<>() {
+        int length;
+        byte[] buf = new byte[8092];
+        while ((length = in.read(buf)) != -1) {
+            dataWriter.write(buf, 0, length);
+        }
 
-            boolean first = true;
-
-            @Override
-            public void accept(String name) {
-                if (!first) {
-                    dataWriter.newLine();
-                }
-                dataWriter.write(name);
-                first = false;
-            }
-        });
-
-        // todo: when to send 226?
         session.getResponseWriter().write(FtpReply.CODE_250);
     }
 }
