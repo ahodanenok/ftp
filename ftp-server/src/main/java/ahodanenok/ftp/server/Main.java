@@ -2,16 +2,12 @@ package ahodanenok.ftp.server;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.UncheckedIOException;
 
-
-import ahodanenok.ftp.server.command.FtpCommand;
-import ahodanenok.ftp.server.command.NameListCommand;
-import ahodanenok.ftp.server.connection.DataWriter;
-import ahodanenok.ftp.server.request.DefaultFtpRequest;
-import ahodanenok.ftp.server.request.FtpRequest;
-import ahodanenok.ftp.server.request.FtpSession;
-import ahodanenok.ftp.server.storage.FileStorage;
-import ahodanenok.ftp.server.storage.FileSystemFileStorage;
+import ahodanenok.ftp.server.command.*;
+import ahodanenok.ftp.server.connection.*;
+import ahodanenok.ftp.server.request.*;
+import ahodanenok.ftp.server.storage.*;
 
 public class Main {
 
@@ -22,17 +18,55 @@ public class Main {
         FtpRequest request = new DefaultFtpRequest(session, "NLST", new String[] { "dir" });
         command.handle(request);
         System.out.println("response:");
-        System.out.println(session.writer.toString("US-ASCII"));
+        System.out.print(session._responseWriter.toString("US-ASCII"));
+        System.out.print(session._dataWriter.toString("US-ASCII"));
+        System.out.println();
     }
 
     static class FtpSessionImpl implements FtpSession {
 
-        private ByteArrayOutputStream writer = new ByteArrayOutputStream();
+        private ByteArrayOutputStream _dataWriter = new ByteArrayOutputStream();
         private DataWriter dataWriter = new DataWriter() {
 
             @Override
-            public void write(byte[] data) throws IOException {
-                writer.write(data);
+            public void write(byte[] data) { //throws IOException {
+                try {
+                    _dataWriter.write(data);
+                } catch (IOException e) {
+                    throw new UncheckedIOException(e);
+                }
+            }
+
+            @Override
+            public void write(String data) { //throws IOException {
+                try {
+                    _dataWriter.write(data.getBytes("US-ASCII"));
+                } catch (IOException e) {
+                    throw new UncheckedIOException(e);
+                }
+            }
+
+            @Override
+            public void newLine() { //throws IOException {
+                _dataWriter.write('\r');
+                _dataWriter.write('\n');
+            }
+        };
+
+        private ByteArrayOutputStream _responseWriter = new ByteArrayOutputStream();
+        private ResponseWriter responseWriter = new ResponseWriter() {
+
+            @Override
+            public void write(FtpReply reply) {// throws IOException {
+                try {
+                    _responseWriter.write((reply.getCode() + "").getBytes("US-ASCII"));
+                    _responseWriter.write(' ');
+                    _responseWriter.write(reply.getDescription().getBytes("US-ASCII"));
+                    _responseWriter.write('\r');
+                    _responseWriter.write('\n');
+                } catch (IOException e) {
+                    throw new UncheckedIOException(e);
+                }
             }
         };
 
@@ -40,5 +74,23 @@ public class Main {
         public DataWriter getDataWriter() {
             return dataWriter;
         }
+
+        @Override
+        public ResponseWriter getResponseWriter() {
+            return responseWriter;
+        }
+
+        @Override
+        public String getCurrentDirectory() {
+            return "home";
+        }
+
+        @Override
+        public boolean isDataConnectionOpened() {
+            return true;
+        }
+
+        @Override
+        public void openDataConnection() { }
     }
 }

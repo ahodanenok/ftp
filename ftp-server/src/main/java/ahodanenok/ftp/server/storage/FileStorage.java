@@ -1,6 +1,8 @@
 package ahodanenok.ftp.server.storage;
 
+import java.util.stream.Stream;
+
 public interface FileStorage {
 
-    Iterable<String> names(String path);
+    Stream<String> names(String path);
 }

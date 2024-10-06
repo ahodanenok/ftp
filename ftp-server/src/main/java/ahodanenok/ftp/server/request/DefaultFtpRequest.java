@@ -18,6 +18,11 @@ public final class DefaultFtpRequest implements FtpRequest {
     }
 
     @Override
+    public boolean hasArgument(int pos) {
+        return args.length > pos;
+    }
+
+    @Override
     public String getArgument(int pos) {
         return args[pos];
     }
