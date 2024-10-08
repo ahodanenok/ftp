@@ -3,18 +3,23 @@ package ahodanenok.ftp.server.request;
 public final class DefaultFtpRequest implements FtpRequest {
 
     private final FtpSession session;
-    private final String command;
+    private final String commandName;
     private final String[] args;
 
-    public DefaultFtpRequest(FtpSession session, String command, String[] args) {
+    public DefaultFtpRequest(FtpSession session, String commandName, String[] args) {
         this.session = session;
-        this.command = command;
+        this.commandName = commandName;
         this.args = args;
     }
 
     @Override
     public FtpSession getSession() {
         return session;
+    }
+
+    @Override
+    public String getCommandName() {
+        return commandName;
     }
 
     @Override
