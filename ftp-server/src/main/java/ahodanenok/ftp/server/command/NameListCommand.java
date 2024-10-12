@@ -1,5 +1,8 @@
 package ahodanenok.ftp.server.command;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.UncheckedIOException;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
@@ -45,18 +48,26 @@ public final class NameListCommand implements FtpCommand {
             session.openDataConnection();
         }
 
-        DataWriter dataWriter = session.getDataWriter();
+        //DataWriter dataWriter = session.getDataWriter();
+        OutputStream out = session.getDataOutputStream();
         names.forEach(new Consumer<>() {
 
             boolean first = true;
 
             @Override
             public void accept(String name) {
-                if (!first) {
-                    dataWriter.newLine();
+                try {
+                    if (!first) {
+                        // dataWriter.newLine();
+                        out.write('\r');
+                        out.write('\n');
+                    }
+                    //dataWriter.write(name);
+                    out.write(name.getBytes("US-ASCII"));
+                    first = false;
+                } catch (IOException e) {
+                    throw new UncheckedIOException(e);
                 }
-                dataWriter.write(name);
-                first = false;
             }
         });
 

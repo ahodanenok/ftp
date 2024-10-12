@@ -17,6 +17,10 @@ public final class DefaultFtpCommandParser implements FtpCommandParser {
             return CommandParseResult.error();
         }
 
+        for (int i = 0; i < parts.length; i++) {
+            parts[i] = parts[i].trim();
+        }
+
         return CommandParseResult.success(parts[0], Arrays.copyOfRange(parts, 1, parts.length));
     }
 }
