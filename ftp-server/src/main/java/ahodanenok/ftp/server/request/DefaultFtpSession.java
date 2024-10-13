@@ -4,14 +4,22 @@ import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
 
-import ahodanenok.ftp.server.connection.DataWriter;
+import ahodanenok.ftp.server.connection.DataConnection;
+import ahodanenok.ftp.server.connection.ControlConnection;
+import ahodanenok.ftp.server.connection.DefaultResponseWriter;
 import ahodanenok.ftp.server.connection.ResponseWriter;
 
 public final class DefaultFtpSession implements FtpSession {
 
-    private ResponseWriter responseWriter;
-    private Socket dataSocket;
-    private OutputStream dataOutputStream;
+    private final ControlConnection controlConnection;
+    private final DataConnection dataConnection;
+    private final ResponseWriter responseWriter;
+
+    public DefaultFtpSession(ControlConnection controlConnection, DataConnection dataConnection) {
+        this.controlConnection = controlConnection;
+        this.dataConnection = dataConnection;
+        this.responseWriter = new DefaultResponseWriter(controlConnection.getOutputStream());
+    }
 
     @Override
     public String getCurrentDirectory() {
@@ -20,31 +28,17 @@ public final class DefaultFtpSession implements FtpSession {
 
     @Override
     public boolean isDataConnectionOpened() {
-        return false;
+        return dataConnection.isOpened();
     }
 
     @Override
     public void openDataConnection() {
-        try {
-            dataSocket = new Socket(InetAddress.getLocalHost(), 10550);
-            dataOutputStream = dataSocket.getOutputStream();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        dataConnection.open();
     }
 
     @Override
     public OutputStream getDataOutputStream() {
-        return dataOutputStream;
-    }
-
-    @Override
-    public DataWriter getDataWriter() {
-        return null;
-    }
-
-    public void setResponseWriter(ResponseWriter responseWriter) {
-        this.responseWriter = responseWriter;
+        return dataConnection.getOutputStream();
     }
 
     @Override

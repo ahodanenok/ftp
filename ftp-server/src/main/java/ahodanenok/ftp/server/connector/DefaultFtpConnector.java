@@ -7,7 +7,8 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-import ahodanenok.ftp.server.connection.DefaultResponseWriter;
+import ahodanenok.ftp.server.connection.TcpSocketControlConnection;
+import ahodanenok.ftp.server.connection.TcpSocketDataConnection;
 import ahodanenok.ftp.server.request.FtpCommandParser;
 import ahodanenok.ftp.server.request.FtpCommandParser.CommandParseResult;
 import ahodanenok.ftp.server.request.FtpRequest;
@@ -43,9 +44,8 @@ public final class DefaultFtpConnector implements FtpConnector {
         ServerSocket serverSocket = new ServerSocket(10450);//, 1, bindAddress);
         Socket socket = serverSocket.accept();
 
-        DefaultFtpSession session = new DefaultFtpSession();
-        session.setResponseWriter(new DefaultResponseWriter(socket.getOutputStream()));
-
+        DefaultFtpSession session = new DefaultFtpSession(
+            new TcpSocketControlConnection(socket), new TcpSocketDataConnection());
 
         BufferedReader reader = new BufferedReader(
             new InputStreamReader(socket.getInputStream(), "US-ASCII"));

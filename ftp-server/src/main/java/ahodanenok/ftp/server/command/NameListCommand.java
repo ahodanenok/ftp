@@ -6,11 +6,11 @@ import java.io.UncheckedIOException;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
-import ahodanenok.ftp.server.connection.DataWriter;
 import ahodanenok.ftp.server.request.FtpReply;
 import ahodanenok.ftp.server.request.FtpRequest;
 import ahodanenok.ftp.server.request.FtpSession;
 import ahodanenok.ftp.server.storage.FileStorage;
+import ahodanenok.ftp.server.utils.IOUtils;
 
 public final class NameListCommand implements FtpCommand {
 
@@ -48,7 +48,6 @@ public final class NameListCommand implements FtpCommand {
             session.openDataConnection();
         }
 
-        //DataWriter dataWriter = session.getDataWriter();
         OutputStream out = session.getDataOutputStream();
         names.forEach(new Consumer<>() {
 
@@ -58,12 +57,9 @@ public final class NameListCommand implements FtpCommand {
             public void accept(String name) {
                 try {
                     if (!first) {
-                        // dataWriter.newLine();
-                        out.write('\r');
-                        out.write('\n');
+                        IOUtils.writeAscii("\r\n", out);
                     }
-                    //dataWriter.write(name);
-                    out.write(name.getBytes("US-ASCII"));
+                    IOUtils.writeAscii(name, out);
                     first = false;
                 } catch (IOException e) {
                     throw new UncheckedIOException(e);
