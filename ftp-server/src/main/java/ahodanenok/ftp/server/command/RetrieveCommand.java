@@ -3,6 +3,8 @@ package ahodanenok.ftp.server.command;
 import java.io.InputStream;
 import java.io.IOException;
 
+import ahodanenok.ftp.server.transfer.DataTransferFactory;
+import ahodanenok.ftp.server.transfer.DataTransferHandler;
 import ahodanenok.ftp.server.storage.FileStorage;
 import ahodanenok.ftp.server.request.FtpReply;
 import ahodanenok.ftp.server.request.FtpRequest;
@@ -19,9 +21,11 @@ public class RetrieveCommand implements FtpCommand {
 // 500, 501, 421, 530
 
     private final FileStorage storage;
+    private final DataTransferFactory transferFactory;
 
-    public RetrieveCommand(FileStorage storage) {
+    public RetrieveCommand(FileStorage storage, DataTransferFactory transferFactory) {
         this.storage = storage;
+        this.transferFactory = transferFactory;
     }
 
     @Override
@@ -43,13 +47,8 @@ public class RetrieveCommand implements FtpCommand {
             session.openDataConnection();
         }
 
-        // DataWriter dataWriter = session.getDataWriter();
-        // int length;
-        // byte[] buf = new byte[8092];
-        // while ((length = in.read(buf)) != -1) {
-        //     dataWriter.write(buf, 0, length);
-        // }
-
+        DataTransferHandler transferHandler = transferFactory.createHandler(null, null, null);
+        transferHandler.transfer(in, session.getDataOutputStream());
         session.getResponseWriter().write(FtpReply.CODE_250);
     }
 }

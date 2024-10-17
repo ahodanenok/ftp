@@ -13,6 +13,7 @@ public final class TcpSocketDataConnection implements DataConnection {
     @Override
     public OutputStream getOutputStream() {
         try {
+            // todo: wrap output stream to handle close?
             return socket.getOutputStream();
         } catch (IOException e) {
             throw new UncheckedIOException(e); // todo: error handling
@@ -21,12 +22,12 @@ public final class TcpSocketDataConnection implements DataConnection {
 
     @Override
     public boolean isOpened() {
-        return socket != null;
+        return socket != null && !socket.isClosed();
     }
 
     @Override
     public void open() {
-        if (socket != null) {
+        if (socket != null && !socket.isClosed()) {
             return; // todo: throw exception?
         }
 
