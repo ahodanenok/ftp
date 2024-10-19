@@ -1,31 +1,31 @@
 package ahodanenok.ftp.server.command;
 
-import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.IOException;
 
 import ahodanenok.ftp.server.storage.FileStorage;
-import ahodanenok.ftp.server.transfer.send.DataSender;
-import ahodanenok.ftp.server.transfer.send.DataSenderFactory;
+import ahodanenok.ftp.server.transfer.receive.DataReceiver;
+import ahodanenok.ftp.server.transfer.receive.DataReceiverFactory;
 import ahodanenok.ftp.server.request.FtpReply;
 import ahodanenok.ftp.server.request.FtpRequest;
 import ahodanenok.ftp.server.request.FtpSession;
 
-public class RetrieveCommand implements FtpCommand {
+public final class StoreCommand implements FtpCommand {
 
-// RETR
+// STOR
 // 125, 150
 //     (110)
 //     226, 250
-//     425, 426, 451
-// 450, 550
+//     425, 426, 451, 551, 552
+// 532, 450, 452, 553
 // 500, 501, 421, 530
 
     private final FileStorage storage;
-    private final DataSenderFactory dataSenderFactory;
+    private final DataReceiverFactory dataReceiverFactory;
 
-    public RetrieveCommand(FileStorage storage, DataSenderFactory dataSenderFactory) {
+    public StoreCommand(FileStorage storage, DataReceiverFactory dataReceiverFactory) {
         this.storage = storage;
-        this.dataSenderFactory = dataSenderFactory;
+        this.dataReceiverFactory = dataReceiverFactory;
     }
 
     @Override
@@ -39,7 +39,7 @@ public class RetrieveCommand implements FtpCommand {
         // todo: check valid path
         // todo: check path exists
         String path = request.getArgument(0);
-        InputStream in = storage.read(path);
+        OutputStream out = storage.write(path);
         if (session.isDataConnectionOpened()) {
             session.getResponseWriter().write(FtpReply.CODE_125);
         } else {
@@ -47,8 +47,8 @@ public class RetrieveCommand implements FtpCommand {
             session.openDataConnection();
         }
 
-        DataSender dataSender = dataSenderFactory.createSender(null, null, null);
-        dataSender.send(in, session.getDataOutputStream());
+        DataReceiver dataReceiver = dataReceiverFactory.createReceiver(null, null, null);
+        dataReceiver.receive(session.getDataInputStream(), out);
         session.getResponseWriter().write(FtpReply.CODE_250);
     }
 }

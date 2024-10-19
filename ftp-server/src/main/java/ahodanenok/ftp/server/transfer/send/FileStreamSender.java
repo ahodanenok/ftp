@@ -1,14 +1,14 @@
-package ahodanenok.ftp.server.transfer;
+package ahodanenok.ftp.server.transfer.send;
 
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UncheckedIOException;
 
-public final class FileStreamTransferHandler implements DataTransferHandler {
+public final class FileStreamSender implements DataSender {
 
     @Override
-    public void transfer(InputStream in, OutputStream out) {
+    public void send(InputStream in, OutputStream out) {
         try {
             int length;
             byte[] buf = new byte[8092];

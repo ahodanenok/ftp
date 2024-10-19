@@ -1,5 +1,6 @@
 package ahodanenok.ftp.server.request;
 
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
@@ -34,6 +35,11 @@ public final class DefaultFtpSession implements FtpSession {
     @Override
     public void openDataConnection() {
         dataConnection.open();
+    }
+
+    @Override
+    public InputStream getDataInputStream() {
+        return dataConnection.getInputStream();
     }
 
     @Override

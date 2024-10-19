@@ -1,5 +1,6 @@
 package ahodanenok.ftp.server.connection;
 
+import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UncheckedIOException;
@@ -9,6 +10,16 @@ import java.net.Socket;
 public final class TcpSocketDataConnection implements DataConnection {
 
     private Socket socket;
+
+    @Override
+    public InputStream getInputStream() {
+        try {
+            // todo: wrap input stream to handle close?
+            return socket.getInputStream();
+        } catch (IOException e) {
+            throw new UncheckedIOException(e); // todo: error handling
+        }
+    }
 
     @Override
     public OutputStream getOutputStream() {

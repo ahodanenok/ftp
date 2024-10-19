@@ -2,6 +2,7 @@ package ahodanenok.ftp.server.storage;
 
 import java.io.InputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -30,6 +31,15 @@ public final class FileSystemFileStorage implements FileStorage {
     public InputStream read(String path) {
         try {
             return Files.newInputStream(rootDir.resolve(path));
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
+
+    @Override
+    public OutputStream write(String path) {
+        try {
+            return Files.newOutputStream(rootDir.resolve(path));
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
