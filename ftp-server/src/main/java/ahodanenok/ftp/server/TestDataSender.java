@@ -10,7 +10,7 @@ import java.net.ServerSocket;
 public class TestDataSender {
 
     public static void main(String... args) throws Exception {
-        ServerSocket serverSocket = new ServerSocket(10550, 50, InetAddress.getLocalHost());
+        ServerSocket serverSocket = new ServerSocket(10551, 50, InetAddress.getByName("localhost"));
         while (true) {
             Socket socket = serverSocket.accept();
             OutputStream out = socket.getOutputStream();

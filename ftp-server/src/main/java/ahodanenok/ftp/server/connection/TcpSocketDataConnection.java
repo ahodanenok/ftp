@@ -10,6 +10,17 @@ import java.net.Socket;
 public final class TcpSocketDataConnection implements DataConnection {
 
     private Socket socket;
+    private InetAddress host;
+    private int port;
+
+    public TcpSocketDataConnection() {
+        try {
+            this.host = InetAddress.getLocalHost();
+            this.port = 10550;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     @Override
     public InputStream getInputStream() {
@@ -32,6 +43,20 @@ public final class TcpSocketDataConnection implements DataConnection {
     }
 
     @Override
+    public void setHostPort(InetAddress host, int port) {
+        boolean wasOpened = isOpened();
+        if (wasOpened) {
+            close();
+        }
+
+        this.host = host;
+        this.port = port;
+        if (wasOpened) {
+            open();
+        }
+    }
+
+    @Override
     public boolean isOpened() {
         return socket != null && !socket.isClosed();
     }
@@ -43,8 +68,7 @@ public final class TcpSocketDataConnection implements DataConnection {
         }
 
         try {
-            // todo: config
-            socket = new Socket(InetAddress.getLocalHost(), 10550);
+            socket = new Socket(host, port);
         } catch (Exception e) {
             throw new RuntimeException(e); // todo: error handling
         }

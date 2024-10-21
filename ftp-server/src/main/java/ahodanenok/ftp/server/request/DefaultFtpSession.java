@@ -28,6 +28,11 @@ public final class DefaultFtpSession implements FtpSession {
     }
 
     @Override
+    public void changeDataHostPort(InetAddress host, int port) {
+        dataConnection.setHostPort(host, port);
+    }
+
+    @Override
     public boolean isDataConnectionOpened() {
         return dataConnection.isOpened();
     }

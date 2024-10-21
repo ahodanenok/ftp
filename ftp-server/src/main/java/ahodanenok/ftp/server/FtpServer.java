@@ -1,6 +1,7 @@
 package ahodanenok.ftp.server;
 
 import ahodanenok.ftp.server.command.NameListCommand;
+import ahodanenok.ftp.server.command.PortCommand;
 import ahodanenok.ftp.server.command.RetrieveCommand;
 import ahodanenok.ftp.server.command.StoreCommand;
 import ahodanenok.ftp.server.connector.DefaultFtpConnector;
@@ -27,6 +28,7 @@ public final class FtpServer {
         requestDispatcher.register("NLST", new NameListCommand(storage));
         requestDispatcher.register("RETR", new RetrieveCommand(storage, dataSenderFactory));
         requestDispatcher.register("STOR", new StoreCommand(storage, dataReceiverFactory));
+        requestDispatcher.register("PORT", new PortCommand());
 
         FtpConnector connector = new DefaultFtpConnector(commandParser, requestDispatcher);
         connector.activate();
