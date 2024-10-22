@@ -5,6 +5,8 @@ import java.util.Map;
 import java.util.concurrent.Executor;
 
 import ahodanenok.ftp.server.command.FtpCommand;
+import ahodanenok.ftp.server.response.FtpReply;
+import ahodanenok.ftp.server.session.FtpSession;
 
 public final class FtpRequestDispatcher {
 

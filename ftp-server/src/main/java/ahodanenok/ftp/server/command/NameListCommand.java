@@ -6,9 +6,9 @@ import java.io.UncheckedIOException;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
-import ahodanenok.ftp.server.request.FtpReply;
 import ahodanenok.ftp.server.request.FtpRequest;
-import ahodanenok.ftp.server.request.FtpSession;
+import ahodanenok.ftp.server.response.FtpReply;
+import ahodanenok.ftp.server.session.FtpSession;
 import ahodanenok.ftp.server.storage.FileStorage;
 import ahodanenok.ftp.server.utils.IOUtils;
 

@@ -1,4 +1,4 @@
-package ahodanenok.ftp.server.request;
+package ahodanenok.ftp.server.response;
 
 public enum FtpReply {
 

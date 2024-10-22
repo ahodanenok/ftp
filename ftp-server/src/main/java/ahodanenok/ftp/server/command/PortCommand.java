@@ -2,9 +2,9 @@ package ahodanenok.ftp.server.command;
 
 import java.net.InetAddress;
 
-import ahodanenok.ftp.server.request.FtpReply;
 import ahodanenok.ftp.server.request.FtpRequest;
-import ahodanenok.ftp.server.request.FtpSession;
+import ahodanenok.ftp.server.response.FtpReply;
+import ahodanenok.ftp.server.session.FtpSession;
 
 public final class PortCommand implements FtpCommand {
 

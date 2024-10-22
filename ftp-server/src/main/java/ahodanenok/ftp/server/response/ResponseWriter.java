@@ -1,8 +1,6 @@
-package ahodanenok.ftp.server.connection;
+package ahodanenok.ftp.server.response;
 
 import java.io.IOException;
-
-import ahodanenok.ftp.server.request.FtpReply;
 
 public interface ResponseWriter {
 

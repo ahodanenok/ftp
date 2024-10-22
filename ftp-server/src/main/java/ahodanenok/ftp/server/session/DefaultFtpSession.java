@@ -1,4 +1,4 @@
-package ahodanenok.ftp.server.request;
+package ahodanenok.ftp.server.session;
 
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -7,8 +7,8 @@ import java.net.Socket;
 
 import ahodanenok.ftp.server.connection.DataConnection;
 import ahodanenok.ftp.server.connection.ControlConnection;
-import ahodanenok.ftp.server.connection.DefaultResponseWriter;
-import ahodanenok.ftp.server.connection.ResponseWriter;
+import ahodanenok.ftp.server.response.DefaultResponseWriter;
+import ahodanenok.ftp.server.response.ResponseWriter;
 
 public final class DefaultFtpSession implements FtpSession {
 

@@ -1,10 +1,8 @@
-package ahodanenok.ftp.server.connection;
+package ahodanenok.ftp.server.response;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UncheckedIOException;
-
-import ahodanenok.ftp.server.request.FtpReply;
 
 public final class DefaultResponseWriter implements ResponseWriter {
 

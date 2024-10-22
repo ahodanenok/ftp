@@ -6,9 +6,9 @@ import java.io.IOException;
 import ahodanenok.ftp.server.storage.FileStorage;
 import ahodanenok.ftp.server.transfer.receive.DataReceiver;
 import ahodanenok.ftp.server.transfer.receive.DataReceiverFactory;
-import ahodanenok.ftp.server.request.FtpReply;
 import ahodanenok.ftp.server.request.FtpRequest;
-import ahodanenok.ftp.server.request.FtpSession;
+import ahodanenok.ftp.server.response.FtpReply;
+import ahodanenok.ftp.server.session.FtpSession;
 
 public final class StoreCommand implements FtpCommand {
 

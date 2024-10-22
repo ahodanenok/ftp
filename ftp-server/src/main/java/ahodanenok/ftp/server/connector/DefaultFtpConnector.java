@@ -9,14 +9,14 @@ import java.net.Socket;
 
 import ahodanenok.ftp.server.connection.TcpSocketControlConnection;
 import ahodanenok.ftp.server.connection.TcpSocketDataConnection;
+import ahodanenok.ftp.server.request.DefaultFtpRequest;
 import ahodanenok.ftp.server.request.FtpCommandParser;
 import ahodanenok.ftp.server.request.FtpCommandParser.CommandParseResult;
 import ahodanenok.ftp.server.request.FtpRequest;
-import ahodanenok.ftp.server.request.DefaultFtpRequest;
-import ahodanenok.ftp.server.request.FtpReply;
 import ahodanenok.ftp.server.request.FtpRequestDispatcher;
-import ahodanenok.ftp.server.request.FtpSession;;
-import ahodanenok.ftp.server.request.DefaultFtpSession;
+import ahodanenok.ftp.server.response.FtpReply;
+import ahodanenok.ftp.server.session.DefaultFtpSession;
+import ahodanenok.ftp.server.session.FtpSession;;
 
 public final class DefaultFtpConnector implements FtpConnector {
 

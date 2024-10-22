@@ -1,5 +1,7 @@
 package ahodanenok.ftp.server.request;
 
+import ahodanenok.ftp.server.session.FtpSession;
+
 public final class DefaultFtpRequest implements FtpRequest {
 
     private final FtpSession session;
