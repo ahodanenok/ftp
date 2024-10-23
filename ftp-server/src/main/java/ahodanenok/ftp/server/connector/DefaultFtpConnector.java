@@ -13,7 +13,7 @@ import ahodanenok.ftp.server.request.DefaultFtpRequest;
 import ahodanenok.ftp.server.request.FtpCommandParser;
 import ahodanenok.ftp.server.request.FtpCommandParser.CommandParseResult;
 import ahodanenok.ftp.server.request.FtpRequest;
-import ahodanenok.ftp.server.request.FtpRequestDispatcher;
+import ahodanenok.ftp.server.request.FtpProtocolInterpreter;
 import ahodanenok.ftp.server.response.FtpReply;
 import ahodanenok.ftp.server.session.DefaultFtpSession;
 import ahodanenok.ftp.server.session.FtpSession;;
@@ -21,11 +21,11 @@ import ahodanenok.ftp.server.session.FtpSession;;
 public final class DefaultFtpConnector implements FtpConnector {
 
     private final FtpCommandParser commandParser;
-    private final FtpRequestDispatcher requestDispatcher;
+    private final FtpProtocolInterpreter protocolInterpreter;
 
-    public DefaultFtpConnector(FtpCommandParser commandParser, FtpRequestDispatcher requestDispatcher) {
+    public DefaultFtpConnector(FtpCommandParser commandParser, FtpProtocolInterpreter protocolInterpreter) {
         this.commandParser = commandParser;
-        this.requestDispatcher = requestDispatcher;
+        this.protocolInterpreter = protocolInterpreter;
     }
 
     @Override
@@ -60,7 +60,7 @@ public final class DefaultFtpConnector implements FtpConnector {
             }
 
             FtpRequest request = new DefaultFtpRequest(session, parseResult.getName(), parseResult.getArguments());
-            requestDispatcher.dispatch(request);
+            protocolInterpreter.process(request);
         }
     }
 }
