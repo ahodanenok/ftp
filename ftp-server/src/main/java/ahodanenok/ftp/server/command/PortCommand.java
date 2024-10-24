@@ -27,7 +27,7 @@ public final class PortCommand implements FtpCommand {
         });
         int port = (parseByte(parts[4]) << 8) | parseByte(parts[5]);
 
-        session.changeDataHostPort(host, port);
+        session.getDataConnection().setHostPort(host, port);
         session.getResponseWriter().write(FtpReply.CODE_200);
     }
 

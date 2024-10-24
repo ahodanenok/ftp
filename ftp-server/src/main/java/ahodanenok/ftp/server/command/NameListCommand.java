@@ -6,8 +6,10 @@ import java.io.UncheckedIOException;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
+import ahodanenok.ftp.server.connection.DataConnection;
 import ahodanenok.ftp.server.request.FtpRequest;
 import ahodanenok.ftp.server.response.FtpReply;
+import ahodanenok.ftp.server.response.ResponseWriter;
 import ahodanenok.ftp.server.session.FtpSession;
 import ahodanenok.ftp.server.storage.FileStorage;
 import ahodanenok.ftp.server.utils.IOUtils;
@@ -30,6 +32,7 @@ public final class NameListCommand implements FtpCommand {
     @Override
     public void handle(FtpRequest request) throws Exception {
         FtpSession session = request.getSession();
+        ResponseWriter responseWriter = session.getResponseWriter();
 
         String path;
         if (request.hasArgument(0)) {
@@ -41,14 +44,16 @@ public final class NameListCommand implements FtpCommand {
         // todo: check valid path
         // todo: check path exists
         Stream<String> names = storage.names(path);
-        if (session.isDataConnectionOpened()) {
-            session.getResponseWriter().write(FtpReply.CODE_125);
+
+        DataConnection dataConnection = session.getDataConnection();
+        if (dataConnection.isOpened()) {
+            responseWriter.write(FtpReply.CODE_125);
         } else {
-            session.getResponseWriter().write(FtpReply.CODE_150);
-            session.openDataConnection();
+            responseWriter.write(FtpReply.CODE_150);
+            dataConnection.open();
         }
 
-        OutputStream out = session.getDataOutputStream();
+        OutputStream out = dataConnection.getOutputStream();
         names.forEach(new Consumer<>() {
 
             boolean first = true;
@@ -68,6 +73,6 @@ public final class NameListCommand implements FtpCommand {
         });
 
         // todo: when to send 226?
-        session.getResponseWriter().write(FtpReply.CODE_250);
+        responseWriter.write(FtpReply.CODE_250);
     }
 }
