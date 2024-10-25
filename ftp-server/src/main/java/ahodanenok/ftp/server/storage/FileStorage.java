@@ -6,9 +6,9 @@ import java.util.stream.Stream;
 
 public interface FileStorage {
 
-    Stream<String> names(String path);
+    Stream<String> names(String path) throws FileStorageException;
 
-    InputStream read(String path);
+    InputStream read(String path) throws FileStorageException;
 
-    OutputStream write(String path);
+    OutputStream write(String path) throws FileStorageException;
 }

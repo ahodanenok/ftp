@@ -23,27 +23,19 @@ public final class TcpSocketDataConnection implements DataConnection {
     }
 
     @Override
-    public InputStream getInputStream() {
-        try {
-            // todo: wrap input stream to handle close?
-            return socket.getInputStream();
-        } catch (IOException e) {
-            throw new UncheckedIOException(e); // todo: error handling
-        }
+    public InputStream getInputStream() throws IOException {
+        // todo: wrap input stream to handle close?
+        return socket.getInputStream();
     }
 
     @Override
-    public OutputStream getOutputStream() {
-        try {
-            // todo: wrap output stream to handle close?
-            return socket.getOutputStream();
-        } catch (IOException e) {
-            throw new UncheckedIOException(e); // todo: error handling
-        }
+    public OutputStream getOutputStream() throws IOException {
+        // todo: wrap output stream to handle close?
+        return socket.getOutputStream();
     }
 
     @Override
-    public void setHostPort(InetAddress host, int port) {
+    public void setHostPort(InetAddress host, int port) throws IOException {
         boolean wasOpened = isOpened();
         if (wasOpened) {
             close();
@@ -62,25 +54,17 @@ public final class TcpSocketDataConnection implements DataConnection {
     }
 
     @Override
-    public void open() {
+    public void open() throws IOException {
         if (socket != null && !socket.isClosed()) {
             return; // todo: throw exception?
         }
 
-        try {
-            socket = new Socket(host, port);
-        } catch (Exception e) {
-            throw new RuntimeException(e); // todo: error handling
-        }
+        socket = new Socket(host, port);
     }
 
     @Override
-    public void close() {
-        try {
-            socket.close();
-            socket = null;
-        } catch (IOException e) {
-            throw new UncheckedIOException(e); // todo: error handling
-        }
+    public void close() throws IOException {
+        socket.close();
+        socket = null;
     }
 }

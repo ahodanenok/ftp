@@ -1,10 +1,11 @@
 package ahodanenok.ftp.server.connection;
 
+import java.io.IOException;
 import java.io.OutputStream;
 
-public interface ControlConnection {
+public interface ControlConnection extends AutoCloseable {
 
-    OutputStream getOutputStream();
+    OutputStream getOutputStream() throws IOException;
 
-    void close();
+    void close() throws IOException;
 }

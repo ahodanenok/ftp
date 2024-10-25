@@ -18,30 +18,33 @@ public final class FileSystemFileStorage implements FileStorage {
     }
 
     @Override
-    public Stream<String> names(String path) {
+    public Stream<String> names(String path) throws FileStorageException {
+        Path targetPath = rootDir.resolve(path);
         try {
-            return Files.list(rootDir.resolve(path))
+            return Files.list(targetPath)
                 .map(p -> p.getFileName().toString());
         } catch (IOException e) {
-            throw new UncheckedIOException(e);
+            throw new FileStorageException(String.format("Can't list names at '%s'", targetPath), e);
         }
     }
 
     @Override
-    public InputStream read(String path) {
+    public InputStream read(String path) throws FileStorageException {
+        Path targetPath = rootDir.resolve(path);
         try {
-            return Files.newInputStream(rootDir.resolve(path));
+            return Files.newInputStream(targetPath);
         } catch (IOException e) {
-            throw new UncheckedIOException(e);
+            throw new FileStorageException(String.format("Can't read from path '%s'", targetPath), e);
         }
     }
 
     @Override
-    public OutputStream write(String path) {
+    public OutputStream write(String path) throws FileStorageException {
+        Path targetPath = rootDir.resolve(path);
         try {
-            return Files.newOutputStream(rootDir.resolve(path));
+            return Files.newOutputStream(targetPath);
         } catch (IOException e) {
-            throw new UncheckedIOException(e);
+            throw new FileStorageException(String.format("Can't write to path '%s'", targetPath), e);
         }
     }
 }

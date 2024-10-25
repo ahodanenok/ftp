@@ -7,6 +7,7 @@ import java.util.concurrent.Executor;
 import ahodanenok.ftp.server.command.FtpCommand;
 import ahodanenok.ftp.server.response.FtpReply;
 import ahodanenok.ftp.server.session.FtpSession;
+import ahodanenok.ftp.server.utils.IOUtils;
 
 public final class FtpProtocolInterpreter {
 
@@ -29,6 +30,16 @@ public final class FtpProtocolInterpreter {
     }
 
     public void process(FtpRequest request) {
+        try {
+            doProcess(request);
+        } catch (Throwable e) {
+            e.printStackTrace(); // todo: log error
+            IOUtils.closeSilently(request.getSession().getDataConnection());
+            IOUtils.closeSilently(request.getSession().getControlConnection());
+        }
+    }
+
+    private void doProcess(FtpRequest request) throws Exception {
         String commandName = request.getCommandName().toUpperCase();
         switch (commandName) {
             case "ABOR" -> executeAbortCommand(request);
@@ -40,7 +51,7 @@ public final class FtpProtocolInterpreter {
         // todo: impl
     }
 
-    private void executeCommand(FtpRequest request, String commandName) {
+    private void executeCommand(FtpRequest request, String commandName) throws Exception {
         FtpSession session = request.getSession();
         FtpCommand command = commands.get(commandName);
         if (command == null) {
@@ -52,9 +63,10 @@ public final class FtpProtocolInterpreter {
         commandExecutor.execute(() -> {
             try {
                 command.handle(request);
-            } catch (Exception e) {
-                e.printStackTrace(); // todo: logging
-                session.getResponseWriter().write(FtpReply.CODE_500); // todo: what reply to send?
+            } catch (Throwable e) {
+                e.printStackTrace(); // todo: log error
+                IOUtils.closeSilently(request.getSession().getDataConnection());
+                IOUtils.closeSilently(request.getSession().getControlConnection());
             }
         });
     }

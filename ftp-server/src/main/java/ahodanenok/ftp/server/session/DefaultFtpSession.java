@@ -1,6 +1,7 @@
 package ahodanenok.ftp.server.session;
 
 import java.io.InputStream;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
@@ -16,7 +17,7 @@ public final class DefaultFtpSession implements FtpSession {
     private final DataConnection dataConnection;
     private final ResponseWriter responseWriter;
 
-    public DefaultFtpSession(ControlConnection controlConnection, DataConnection dataConnection) {
+    public DefaultFtpSession(ControlConnection controlConnection, DataConnection dataConnection) throws IOException {
         this.controlConnection = controlConnection;
         this.dataConnection = dataConnection;
         this.responseWriter = new DefaultResponseWriter(controlConnection.getOutputStream());
@@ -25,6 +26,11 @@ public final class DefaultFtpSession implements FtpSession {
     @Override
     public String getCurrentDirectory() {
         return "";
+    }
+
+    @Override
+    public ControlConnection getControlConnection() {
+        return controlConnection;
     }
 
     @Override

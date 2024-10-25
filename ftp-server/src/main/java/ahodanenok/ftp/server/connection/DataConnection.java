@@ -1,20 +1,21 @@
 package ahodanenok.ftp.server.connection;
 
 import java.io.InputStream;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.net.InetAddress;
 
-public interface DataConnection {
+public interface DataConnection extends AutoCloseable {
 
-    InputStream getInputStream();
+    InputStream getInputStream() throws IOException;
 
-    OutputStream getOutputStream();
+    OutputStream getOutputStream() throws IOException;
 
-    void setHostPort(InetAddress host, int port);
+    void setHostPort(InetAddress host, int port) throws IOException;
 
     boolean isOpened();
 
-    void open();
+    void open() throws IOException;
 
-    void close();
+    void close() throws IOException;
 }

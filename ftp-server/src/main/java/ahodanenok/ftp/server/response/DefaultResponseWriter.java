@@ -13,15 +13,11 @@ public final class DefaultResponseWriter implements ResponseWriter {
     }
 
     @Override
-    public void write(FtpReply reply) {
-        try {
-            out.write((reply.getCode() + "").getBytes("US-ASCII"));
-            out.write(' ');
-            out.write(reply.getDescription().getBytes("US-ASCII"));
-            out.write('\r');
-            out.write('\n');
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
+    public void write(FtpReply reply) throws IOException {
+        out.write((reply.getCode() + "").getBytes("US-ASCII"));
+        out.write(' ');
+        out.write(reply.getDescription().getBytes("US-ASCII"));
+        out.write('\r');
+        out.write('\n');
     }
 }

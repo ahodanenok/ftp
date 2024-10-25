@@ -14,16 +14,12 @@ public final class TcpSocketControlConnection implements ControlConnection {
     }
 
     @Override
-    public OutputStream getOutputStream() {
-        try {
-            return socket.getOutputStream();
-        } catch (IOException e) {
-            throw new UncheckedIOException(e); // todo: error hadling
-        }
+    public OutputStream getOutputStream() throws IOException {
+        return socket.getOutputStream();
     }
 
     @Override
-    public void close() {
+    public void close() throws IOException {
         // todo: impl
     }
 }

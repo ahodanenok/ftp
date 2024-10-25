@@ -4,8 +4,7 @@ import java.io.IOException;
 
 public interface ResponseWriter {
 
-    // todo: what exception?
-    void write(FtpReply reply);// throws IOException;
+    void write(FtpReply reply) throws IOException;
 
     // void write(FtpReply reply, String description);
 
