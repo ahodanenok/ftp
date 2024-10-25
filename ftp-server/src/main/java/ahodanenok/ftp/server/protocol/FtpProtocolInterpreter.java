@@ -1,10 +1,11 @@
-package ahodanenok.ftp.server.request;
+package ahodanenok.ftp.server.protocol;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Executor;
 
 import ahodanenok.ftp.server.command.FtpCommand;
+import ahodanenok.ftp.server.request.FtpRequest;
 import ahodanenok.ftp.server.response.FtpReply;
 import ahodanenok.ftp.server.session.FtpSession;
 import ahodanenok.ftp.server.utils.IOUtils;

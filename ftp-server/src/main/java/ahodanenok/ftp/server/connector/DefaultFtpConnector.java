@@ -9,11 +9,11 @@ import java.net.Socket;
 
 import ahodanenok.ftp.server.connection.TcpSocketControlConnection;
 import ahodanenok.ftp.server.connection.TcpSocketDataConnection;
+import ahodanenok.ftp.server.protocol.FtpProtocolInterpreter;
 import ahodanenok.ftp.server.request.DefaultFtpRequest;
 import ahodanenok.ftp.server.request.FtpCommandParser;
 import ahodanenok.ftp.server.request.FtpCommandParser.CommandParseResult;
 import ahodanenok.ftp.server.request.FtpRequest;
-import ahodanenok.ftp.server.request.FtpProtocolInterpreter;
 import ahodanenok.ftp.server.response.FtpReply;
 import ahodanenok.ftp.server.session.DefaultFtpSession;
 import ahodanenok.ftp.server.session.FtpSession;;
