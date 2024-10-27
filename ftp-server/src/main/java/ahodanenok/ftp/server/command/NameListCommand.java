@@ -30,7 +30,7 @@ public final class NameListCommand implements FtpCommand {
     }
 
     @Override
-    public void handle(FtpRequest request) throws Exception {
+    public void handle(FtpRequest request, FtpCommandExecution execution) throws Exception {
         FtpSession session = request.getSession();
         ResponseWriter responseWriter = session.getResponseWriter();
 

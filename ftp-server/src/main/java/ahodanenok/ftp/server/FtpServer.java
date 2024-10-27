@@ -1,5 +1,7 @@
 package ahodanenok.ftp.server;
 
+import java.util.concurrent.Executors;
+
 import ahodanenok.ftp.server.command.NameListCommand;
 import ahodanenok.ftp.server.command.PortCommand;
 import ahodanenok.ftp.server.command.RetrieveCommand;
@@ -24,7 +26,8 @@ public final class FtpServer {
         DataSenderFactory dataSenderFactory = new DefaultDataSenderFactory();
         DataReceiverFactory dataReceiverFactory = new DefaultDataReceiverFactory();
 
-        FtpProtocolInterpreter protocolInterpreter = new FtpProtocolInterpreter(r -> r.run());
+        FtpProtocolInterpreter protocolInterpreter =
+            new FtpProtocolInterpreter(Executors.newSingleThreadExecutor());
         protocolInterpreter.register("NLST", new NameListCommand(storage));
         protocolInterpreter.register("RETR", new RetrieveCommand(storage, dataSenderFactory));
         protocolInterpreter.register("STOR", new StoreCommand(storage, dataReceiverFactory));

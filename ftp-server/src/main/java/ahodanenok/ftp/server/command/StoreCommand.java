@@ -31,7 +31,7 @@ public final class StoreCommand implements FtpCommand {
     }
 
     @Override
-    public void handle(FtpRequest request) throws Exception {
+    public void handle(FtpRequest request, FtpCommandExecution execution) throws Exception {
         FtpSession session = request.getSession();
         ResponseWriter responseWriter = session.getResponseWriter();
 
@@ -54,7 +54,12 @@ public final class StoreCommand implements FtpCommand {
         }
 
         DataReceiver dataReceiver = dataReceiverFactory.createReceiver(null, null, null);
-        dataReceiver.receive(dataConnection.getInputStream(), out);
-        responseWriter.write(FtpReply.CODE_250);
+        dataReceiver.setIsAborted(execution::isAborted);
+        boolean success = dataReceiver.receive(dataConnection.getInputStream(), out);
+        if (success) {
+            responseWriter.write(FtpReply.CODE_250);
+        } else {
+            responseWriter.write(FtpReply.CODE_426);
+        }
     }
 }

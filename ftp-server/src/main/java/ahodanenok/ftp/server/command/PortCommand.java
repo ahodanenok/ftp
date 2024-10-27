@@ -9,7 +9,7 @@ import ahodanenok.ftp.server.session.FtpSession;
 public final class PortCommand implements FtpCommand {
 
     @Override
-    public void handle(FtpRequest request) throws Exception {
+    public void handle(FtpRequest request, FtpCommandExecution execution) throws Exception {
         FtpSession session = request.getSession();
 
         // todo: check has one argument
