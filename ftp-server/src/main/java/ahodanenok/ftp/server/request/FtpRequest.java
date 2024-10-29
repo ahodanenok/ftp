@@ -8,6 +8,9 @@ public interface FtpRequest {
 
     String getCommandName();
 
+    int getArgumentCount();
+
+    // todo: not needed?
     boolean hasArgument(int pos);
 
     String getArgument(int pos);

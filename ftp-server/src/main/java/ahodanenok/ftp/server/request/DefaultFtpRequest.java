@@ -25,6 +25,11 @@ public final class DefaultFtpRequest implements FtpRequest {
     }
 
     @Override
+    public int getArgumentCount() {
+        return args.length;
+    }
+
+    @Override
     public boolean hasArgument(int pos) {
         return args.length > pos;
     }

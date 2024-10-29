@@ -1,4 +1,4 @@
-package ahodanenok.ftp.server.storage;
+package ahodanenok.ftp.server.storage.exception;
 
 public class FileStorageException extends Exception {
 

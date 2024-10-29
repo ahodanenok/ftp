@@ -3,11 +3,16 @@ package ahodanenok.ftp.server.storage;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.UncheckedIOException;
+import java.nio.file.InvalidPathException;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.stream.Stream;
+
+import ahodanenok.ftp.server.storage.exception.FileNotFoundException;
+import ahodanenok.ftp.server.storage.exception.FilePathInvalidException;
+import ahodanenok.ftp.server.storage.exception.FileStorageException;
 
 public final class FileSystemFileStorage implements FileStorage {
 
@@ -45,6 +50,26 @@ public final class FileSystemFileStorage implements FileStorage {
             return Files.newOutputStream(targetPath);
         } catch (IOException e) {
             throw new FileStorageException(String.format("Can't write to path '%s'", targetPath), e);
+        }
+    }
+
+    @Override
+    public void delete(String path) throws FileStorageException {
+        Path targetPath = resolvePath(path);
+        try {
+            Files.delete(targetPath);
+        } catch (NoSuchFileException e) {
+            throw new FileNotFoundException(targetPath.toString(), e);
+        } catch (IOException e) {
+            throw new FileStorageException(String.format("Can't delete file '%s'", targetPath), e);
+        }
+    }
+
+    private Path resolvePath(String path) throws FileStorageException {
+        try {
+            return rootDir.resolve(path);
+        } catch (InvalidPathException e) {
+            throw new FilePathInvalidException(path, e);
         }
     }
 }

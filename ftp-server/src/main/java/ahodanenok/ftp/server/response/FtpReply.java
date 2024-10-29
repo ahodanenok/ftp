@@ -8,8 +8,10 @@ public enum FtpReply {
     CODE_226(226, "Closing data connection."),
     CODE_250(250, "Requested file action okay, completed."),
     CODE_426(426, "Connection closed; transfer aborted."),
+    CODE_450(450, "Requested file action not taken."),
     CODE_500(500, "Syntax error, command unrecognized."),
-    CODE_501(501, "Syntax error in parameters or arguments.");
+    CODE_501(501, "Syntax error in parameters or arguments."),
+    CODE_550(550, "Requested action not taken.");
 
     private final int code;
     private final String description;
