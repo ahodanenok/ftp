@@ -58,8 +58,8 @@ public final class FtpProtocolInterpreter {
         CountDownLatch completed;
         synchronized (this) {
             if (currentExecution == null) {
-                session.getResponseWriter().write(FtpReply.CODE_226);
                 session.getDataConnection().close();
+                session.getResponseWriter().write(FtpReply.CODE_226);
                 return;
             }
 
@@ -69,8 +69,8 @@ public final class FtpProtocolInterpreter {
 
         // todo: handle interrupted exception?
         completed.await();
-        session.getResponseWriter().write(FtpReply.CODE_226);
         session.getDataConnection().close();
+        session.getResponseWriter().write(FtpReply.CODE_226);
         clearCurrentExecution();
     }
 

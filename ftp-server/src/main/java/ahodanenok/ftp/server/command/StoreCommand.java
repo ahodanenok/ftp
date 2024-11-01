@@ -45,21 +45,7 @@ public final class StoreCommand implements FtpCommand {
         String path = request.getArgument(0);
         OutputStream out = storage.write(path);
 
-        DataConnection dataConnection = session.getDataConnection();
-        if (dataConnection.isOpened()) {
-            responseWriter.write(FtpReply.CODE_125);
-        } else {
-            responseWriter.write(FtpReply.CODE_150);
-            dataConnection.open();
-        }
-
         DataReceiver dataReceiver = dataReceiverFactory.createReceiver(null, null, null);
-        dataReceiver.setIsAborted(execution::isAborted);
-        boolean success = dataReceiver.receive(dataConnection.getInputStream(), out);
-        if (success) {
-            responseWriter.write(FtpReply.CODE_250);
-        } else {
-            responseWriter.write(FtpReply.CODE_426);
-        }
+        dataReceiver.receive(out, new FtpCommandDataReceiveContext(session, execution));
     }
 }

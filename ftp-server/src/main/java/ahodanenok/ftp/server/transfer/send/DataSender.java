@@ -1,9 +1,9 @@
 package ahodanenok.ftp.server.transfer.send;
 
 import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.IOException;
 
 public interface DataSender {
 
-    void send(InputStream in, OutputStream out);
+    void send(InputStream in, DataSendContext context) throws IOException;
 }

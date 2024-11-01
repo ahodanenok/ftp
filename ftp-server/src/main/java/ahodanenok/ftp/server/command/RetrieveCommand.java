@@ -45,16 +45,7 @@ public class RetrieveCommand implements FtpCommand {
         String path = request.getArgument(0);
         InputStream in = storage.read(path);
 
-        DataConnection dataConnection = session.getDataConnection();
-        if (dataConnection.isOpened()) {
-            responseWriter.write(FtpReply.CODE_125);
-        } else {
-            responseWriter.write(FtpReply.CODE_150);
-            dataConnection.open();
-        }
-
         DataSender dataSender = dataSenderFactory.createSender(null, null, null);
-        dataSender.send(in, dataConnection.getOutputStream());
-        responseWriter.write(FtpReply.CODE_250);
+        dataSender.send(in, new FtpCommandDataSendContext(session, execution));
     }
 }

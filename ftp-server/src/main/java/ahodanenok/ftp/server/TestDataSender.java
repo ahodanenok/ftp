@@ -23,6 +23,7 @@ public class TestDataSender {
             }
             in.close();
             out.close();
+            socket.close();
             System.out.println("!!! transfer completed");
         }
     }

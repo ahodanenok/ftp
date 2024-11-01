@@ -55,7 +55,7 @@ public final class TcpSocketDataConnection implements DataConnection {
 
     @Override
     public void open() throws IOException {
-        if (socket != null && !socket.isClosed()) {
+        if (isOpened()) {
             return; // todo: throw exception?
         }
 
