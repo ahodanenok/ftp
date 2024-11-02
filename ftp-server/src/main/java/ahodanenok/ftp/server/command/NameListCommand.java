@@ -1,18 +1,16 @@
 package ahodanenok.ftp.server.command;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.UncheckedIOException;
-import java.util.function.Consumer;
+import java.io.ByteArrayInputStream;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import ahodanenok.ftp.server.connection.DataConnection;
 import ahodanenok.ftp.server.request.FtpRequest;
 import ahodanenok.ftp.server.response.FtpReply;
 import ahodanenok.ftp.server.response.ResponseWriter;
 import ahodanenok.ftp.server.session.FtpSession;
 import ahodanenok.ftp.server.storage.FileStorage;
-import ahodanenok.ftp.server.utils.IOUtils;
+import ahodanenok.ftp.server.transfer.send.DataSender;
+import ahodanenok.ftp.server.transfer.send.DataSenderFactory;
 
 public final class NameListCommand implements FtpCommand {
 
@@ -24,9 +22,11 @@ public final class NameListCommand implements FtpCommand {
 // 500, 501, 502, 421, 530
 
     private final FileStorage storage;
+    private final DataSenderFactory dataSenderFactory;
 
-    public NameListCommand(FileStorage storage) {
+    public NameListCommand(FileStorage storage, DataSenderFactory dataSenderFactory) {
         this.storage = storage;
+        this.dataSenderFactory = dataSenderFactory;
     }
 
     @Override
@@ -45,34 +45,11 @@ public final class NameListCommand implements FtpCommand {
         // todo: check path exists
         Stream<String> names = storage.names(path);
 
-        DataConnection dataConnection = session.getDataConnection();
-        if (dataConnection.isOpened()) {
-            responseWriter.write(FtpReply.CODE_125);
-        } else {
-            responseWriter.write(FtpReply.CODE_150);
-            dataConnection.open();
-        }
+        // todo: could be written not only in ASCII, support EBCDIC (set by TYPE command)
+        String result = names.collect(Collectors.joining("\r\n", "", "\r\n"));
+        ByteArrayInputStream in = new ByteArrayInputStream(result.getBytes("US-ASCII"));
 
-        OutputStream out = dataConnection.getOutputStream();
-        names.forEach(new Consumer<>() {
-
-            boolean first = true;
-
-            @Override
-            public void accept(String name) {
-                try {
-                    if (!first) {
-                        IOUtils.writeAscii("\r\n", out);
-                    }
-                    IOUtils.writeAscii(name, out);
-                    first = false;
-                } catch (IOException e) {
-                    throw new UncheckedIOException(e);
-                }
-            }
-        });
-
-        // todo: when to send 226?
-        responseWriter.write(FtpReply.CODE_250);
+        DataSender dataSender = dataSenderFactory.createSender(null, null, null);
+        dataSender.send(in, new FtpCommandDataSendContext(session, execution));
     }
 }

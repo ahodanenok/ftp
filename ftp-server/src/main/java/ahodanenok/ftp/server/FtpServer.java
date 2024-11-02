@@ -29,7 +29,7 @@ public final class FtpServer {
 
         FtpProtocolInterpreter protocolInterpreter =
             new FtpProtocolInterpreter(Executors.newSingleThreadExecutor());
-        protocolInterpreter.register("NLST", new NameListCommand(storage));
+        protocolInterpreter.register("NLST", new NameListCommand(storage, dataSenderFactory));
         protocolInterpreter.register("RETR", new RetrieveCommand(storage, dataSenderFactory));
         protocolInterpreter.register("STOR", new StoreCommand(storage, dataReceiverFactory));
         protocolInterpreter.register("PORT", new PortCommand());
