@@ -19,6 +19,7 @@ public final class DeleteCommand implements FtpCommand {
     @Override
     public void handle(FtpRequest request, FtpCommandExecution execution) throws Exception {
         FtpSession session = request.getSession();
+        // todo: 530 Not logged in.
 
         if (request.getArgumentCount() != 1) {
             session.getResponseWriter().write(FtpReply.CODE_501);
@@ -28,7 +29,9 @@ public final class DeleteCommand implements FtpCommand {
         String path = request.getArgument(0);
         try {
             storage.delete(path);
+            // todo: when to return "450  Requested file action not taken. File unavailable"?
         } catch (FilePathInvalidException e) {
+            // todo: 553 Requested action not taken. File name not allowed.
             session.getResponseWriter().write(FtpReply.CODE_501);
             return;
         } catch (FileStorageException e) {

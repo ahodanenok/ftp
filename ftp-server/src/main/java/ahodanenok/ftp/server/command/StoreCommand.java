@@ -14,14 +14,6 @@ import ahodanenok.ftp.server.session.FtpSession;
 
 public final class StoreCommand implements FtpCommand {
 
-// STOR
-// 125, 150
-//     (110)
-//     226, 250
-//     425, 426, 451, 551, 552
-// 532, 450, 452, 553
-// 500, 501, 421, 530
-
     private final FileStorage storage;
     private final DataReceiverFactory dataReceiverFactory;
 
@@ -34,7 +26,10 @@ public final class StoreCommand implements FtpCommand {
     public void handle(FtpRequest request, FtpCommandExecution execution) throws Exception {
         FtpSession session = request.getSession();
         ResponseWriter responseWriter = session.getResponseWriter();
+        // todo: 530 Not logged in.
+        // todo: 532 Need account for storing files.
 
+        // todo: check exactly one argument
         if (!request.hasArgument(0)) {
             responseWriter.write(FtpReply.CODE_501);
             return;
@@ -44,8 +39,15 @@ public final class StoreCommand implements FtpCommand {
         // todo: check path exists
         String path = request.getArgument(0);
         OutputStream out = storage.write(path);
+        // todo: 553 Requested action not taken. File name not allowed.
 
+        // todo: 110 Restart marker reply.
         DataReceiver dataReceiver = dataReceiverFactory.createReceiver(null, null, null);
         dataReceiver.receive(out, new FtpCommandDataReceiveContext(session, execution));
+        // todo: 452 Requested action not taken. Insufficient storage space in system.
+        // todo: 552 Requested file action aborted. Exceeded storage allocation
+
+        // todo: when to return "450  Requested file action not taken. File unavailable"?
+        // todo: when to return "451 Requested action aborted: local error in processing."?
     }
 }

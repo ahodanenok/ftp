@@ -14,14 +14,6 @@ import ahodanenok.ftp.server.session.FtpSession;
 
 public class RetrieveCommand implements FtpCommand {
 
-// RETR
-// 125, 150
-//     (110)
-//     226, 250
-//     425, 426, 451
-// 450, 550
-// 500, 501, 421, 530
-
     private final FileStorage storage;
     private final DataSenderFactory dataSenderFactory;
 
@@ -34,7 +26,9 @@ public class RetrieveCommand implements FtpCommand {
     public void handle(FtpRequest request, FtpCommandExecution execution) throws Exception {
         FtpSession session = request.getSession();
         ResponseWriter responseWriter = session.getResponseWriter();
+        // todo: 530 Not logged in.
 
+        // todo: check exactly one argument
         if (!request.hasArgument(0)) {
             responseWriter.write(FtpReply.CODE_501);
             return;
@@ -44,8 +38,13 @@ public class RetrieveCommand implements FtpCommand {
         // todo: check path exists
         String path = request.getArgument(0);
         InputStream in = storage.read(path);
+        // todo: 550 Requested action not taken. File unavailable
 
+        // todo: 110 Restart marker reply.
         DataSender dataSender = dataSenderFactory.createSender(null, null, null);
         dataSender.send(in, new FtpCommandDataSendContext(session, execution));
+
+        // todo: when to return "450 Requested file action not taken"?
+        // todo: when to return "451 Requested action aborted: local error in processing."?
     }
 }

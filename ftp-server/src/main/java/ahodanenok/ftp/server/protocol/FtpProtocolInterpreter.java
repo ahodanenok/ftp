@@ -46,6 +46,8 @@ public final class FtpProtocolInterpreter {
     }
 
     private void doProcess(FtpRequest request) throws Exception {
+        // todo: 421 Service not available, closing control connection.
+
         String commandName = request.getCommandName().toUpperCase();
         switch (commandName) {
             case "ABOR" -> executeAbortCommand(request);

@@ -11,12 +11,13 @@ public final class PortCommand implements FtpCommand {
     @Override
     public void handle(FtpRequest request, FtpCommandExecution execution) throws Exception {
         FtpSession session = request.getSession();
+        // todo: 530 Not logged in.
 
         // todo: check has one argument
         String hostPort = request.getArgument(0);
         String[] parts = hostPort.split(",");
         if (parts.length != 6) {
-            // todo: error
+            // todo: 501 Syntax error in parameters or arguments.
         }
 
         InetAddress host = InetAddress.getByAddress(new byte[] {
@@ -33,7 +34,7 @@ public final class PortCommand implements FtpCommand {
 
     // todo: move to utils?
     private byte parseByte(String s) {
-        // todo: on error
+        // todo: 501 Syntax error in parameters or arguments.
         return Byte.parseByte(s);
     }
 }
