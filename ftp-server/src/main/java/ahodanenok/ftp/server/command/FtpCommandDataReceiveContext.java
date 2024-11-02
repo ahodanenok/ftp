@@ -33,7 +33,12 @@ public final class FtpCommandDataReceiveContext implements DataReceiveContext {
     public InputStream openConnection() throws IOException {
         if (!session.getDataConnection().isOpened()) {
             session.getResponseWriter().write(FtpReply.CODE_150);
-            session.getDataConnection().open();
+            try {
+                session.getDataConnection().open();
+            } catch (IOException e) {
+                session.getResponseWriter().write(FtpReply.CODE_425);
+                throw e;
+            }
         }
 
         return session.getDataConnection().getInputStream();
