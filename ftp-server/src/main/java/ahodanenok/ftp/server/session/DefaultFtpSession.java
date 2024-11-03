@@ -5,17 +5,20 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.util.Objects;
 
 import ahodanenok.ftp.server.connection.DataConnection;
 import ahodanenok.ftp.server.connection.ControlConnection;
 import ahodanenok.ftp.server.response.DefaultResponseWriter;
 import ahodanenok.ftp.server.response.ResponseWriter;
+import ahodanenok.ftp.server.transfer.DataType;
 
 public final class DefaultFtpSession implements FtpSession {
 
     private final ControlConnection controlConnection;
     private final DataConnection dataConnection;
     private final ResponseWriter responseWriter;
+    private DataType dataType = DataType.ASCII;
 
     public DefaultFtpSession(ControlConnection controlConnection, DataConnection dataConnection) throws IOException {
         this.controlConnection = controlConnection;
@@ -41,5 +44,16 @@ public final class DefaultFtpSession implements FtpSession {
     @Override
     public ResponseWriter getResponseWriter() {
         return responseWriter;
+    }
+
+    @Override
+    public DataType getDataType() {
+        return dataType;
+    }
+
+    @Override
+    public void setDataType(DataType dataType) {
+        Objects.requireNonNull(dataType, "Data type can't be null");
+        this.dataType = dataType;
     }
 }

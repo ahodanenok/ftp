@@ -7,6 +7,7 @@ import ahodanenok.ftp.server.command.NameListCommand;
 import ahodanenok.ftp.server.command.PortCommand;
 import ahodanenok.ftp.server.command.RetrieveCommand;
 import ahodanenok.ftp.server.command.StoreCommand;
+import ahodanenok.ftp.server.command.TypeCommand;
 import ahodanenok.ftp.server.connector.DefaultFtpConnector;
 import ahodanenok.ftp.server.connector.FtpConnector;
 import ahodanenok.ftp.server.protocol.FtpProtocolInterpreter;
@@ -34,6 +35,7 @@ public final class FtpServer {
         protocolInterpreter.register("STOR", new StoreCommand(storage, dataReceiverFactory));
         protocolInterpreter.register("PORT", new PortCommand());
         protocolInterpreter.register("DELE", new DeleteCommand(storage));
+        protocolInterpreter.register("TYPE", new TypeCommand());
 
         FtpConnector connector = new DefaultFtpConnector(commandParser, protocolInterpreter);
         connector.activate();

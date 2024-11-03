@@ -7,6 +7,7 @@ import java.net.InetAddress;
 import ahodanenok.ftp.server.connection.ControlConnection;
 import ahodanenok.ftp.server.connection.DataConnection;
 import ahodanenok.ftp.server.response.ResponseWriter;
+import ahodanenok.ftp.server.transfer.DataType;
 
 public interface FtpSession {
 
@@ -17,4 +18,8 @@ public interface FtpSession {
     DataConnection getDataConnection();
 
     ResponseWriter getResponseWriter();
+
+    DataType getDataType();
+
+    void setDataType(DataType dataType);
 }

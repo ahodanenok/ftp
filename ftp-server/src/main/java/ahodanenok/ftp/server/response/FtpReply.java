@@ -12,6 +12,7 @@ public enum FtpReply {
     CODE_450(450, "Requested file action not taken."),
     CODE_500(500, "Syntax error, command unrecognized."),
     CODE_501(501, "Syntax error in parameters or arguments."),
+    CODE_504(504, "Command not implemented for that parameter."),
     CODE_550(550, "Requested action not taken.");
 
     private final int code;
