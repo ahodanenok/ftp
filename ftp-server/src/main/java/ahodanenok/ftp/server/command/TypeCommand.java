@@ -22,21 +22,21 @@ public final class TypeCommand implements FtpCommand {
         }
 
         String typeCode = request.getArgument(0);
-        if ("A".equals(typeCode)) {
+        if ("A".equalsIgnoreCase(typeCode)) {
             if (!checkFormatType(request)) {
                 return;
             }
 
             session.setDataType(DataType.ASCII);
             responseWriter.write(FtpReply.CODE_200);
-        } else if ("E".equals(typeCode)) {
+        } else if ("E".equalsIgnoreCase(typeCode)) {
             if (!checkFormatType(request)) {
                 return;
             }
 
             session.setDataType(DataType.EBCDIC);
             responseWriter.write(FtpReply.CODE_200);
-        } else if ("I".equals(typeCode)) {
+        } else if ("I".equalsIgnoreCase(typeCode)) {
             if (request.getArgumentCount() != 1) {
                 responseWriter.write(FtpReply.CODE_501);
                 return;
@@ -44,7 +44,7 @@ public final class TypeCommand implements FtpCommand {
 
             session.setDataType(DataType.IMAGE);
             responseWriter.write(FtpReply.CODE_200);
-        } else if ("L".equals(typeCode)) {
+        } else if ("L".equalsIgnoreCase(typeCode)) {
             if (request.getArgumentCount() != 2) {
                 responseWriter.write(FtpReply.CODE_501);
                 return;
@@ -72,11 +72,11 @@ public final class TypeCommand implements FtpCommand {
         }
 
         String formatType = request.getArgument(1);
-        if ("N".equals(formatType)) {
+        if ("N".equalsIgnoreCase(formatType)) {
             return true;
         }
 
-        if ("T".equals(formatType) || "C".equals(formatType)) {
+        if ("T".equalsIgnoreCase(formatType) || "C".equalsIgnoreCase(formatType)) {
             request.getSession().getResponseWriter().write(FtpReply.CODE_504);
         } else {
             request.getSession().getResponseWriter().write(FtpReply.CODE_501);

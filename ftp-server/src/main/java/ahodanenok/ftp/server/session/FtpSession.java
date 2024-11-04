@@ -8,6 +8,7 @@ import ahodanenok.ftp.server.connection.ControlConnection;
 import ahodanenok.ftp.server.connection.DataConnection;
 import ahodanenok.ftp.server.response.ResponseWriter;
 import ahodanenok.ftp.server.transfer.DataType;
+import ahodanenok.ftp.server.transfer.StructureType;
 
 public interface FtpSession {
 
@@ -22,4 +23,8 @@ public interface FtpSession {
     DataType getDataType();
 
     void setDataType(DataType dataType);
+
+    StructureType getStructureType();
+
+    void setStructureType(StructureType structureType);
 }

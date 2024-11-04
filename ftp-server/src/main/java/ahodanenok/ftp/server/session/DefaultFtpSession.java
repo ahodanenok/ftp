@@ -12,6 +12,7 @@ import ahodanenok.ftp.server.connection.ControlConnection;
 import ahodanenok.ftp.server.response.DefaultResponseWriter;
 import ahodanenok.ftp.server.response.ResponseWriter;
 import ahodanenok.ftp.server.transfer.DataType;
+import ahodanenok.ftp.server.transfer.StructureType;
 
 public final class DefaultFtpSession implements FtpSession {
 
@@ -19,6 +20,7 @@ public final class DefaultFtpSession implements FtpSession {
     private final DataConnection dataConnection;
     private final ResponseWriter responseWriter;
     private DataType dataType = DataType.ASCII;
+    private StructureType structureType = StructureType.FILE;
 
     public DefaultFtpSession(ControlConnection controlConnection, DataConnection dataConnection) throws IOException {
         this.controlConnection = controlConnection;
@@ -55,5 +57,16 @@ public final class DefaultFtpSession implements FtpSession {
     public void setDataType(DataType dataType) {
         Objects.requireNonNull(dataType, "Data type can't be null");
         this.dataType = dataType;
+    }
+
+    @Override
+    public StructureType getStructureType() {
+        return structureType;
+    }
+
+    @Override
+    public void setStructureType(StructureType structureType) {
+        Objects.requireNonNull(structureType);
+        this.structureType = structureType;
     }
 }
