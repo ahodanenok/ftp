@@ -1,14 +1,12 @@
 package ahodanenok.ftp.server.command;
 
-import java.io.IOException;
-
 import ahodanenok.ftp.server.request.FtpRequest;
 import ahodanenok.ftp.server.response.FtpReply;
 import ahodanenok.ftp.server.response.ResponseWriter;
 import ahodanenok.ftp.server.session.FtpSession;
 import ahodanenok.ftp.server.transfer.StructureType;
 
-public final class StructureCommand implements FtpCommand {
+public final class StructureTypeCommand implements FtpCommand {
 
     @Override
     public void handle(FtpRequest request, FtpCommandExecution execution) throws Exception {

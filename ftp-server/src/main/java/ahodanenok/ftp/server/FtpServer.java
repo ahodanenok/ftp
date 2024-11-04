@@ -2,13 +2,14 @@ package ahodanenok.ftp.server;
 
 import java.util.concurrent.Executors;
 
+import ahodanenok.ftp.server.command.DataTypeCommand;
 import ahodanenok.ftp.server.command.DeleteCommand;
 import ahodanenok.ftp.server.command.NameListCommand;
 import ahodanenok.ftp.server.command.PortCommand;
 import ahodanenok.ftp.server.command.RetrieveCommand;
 import ahodanenok.ftp.server.command.StoreCommand;
-import ahodanenok.ftp.server.command.StructureCommand;
-import ahodanenok.ftp.server.command.TypeCommand;
+import ahodanenok.ftp.server.command.StructureTypeCommand;
+import ahodanenok.ftp.server.command.TransferModeCommand;
 import ahodanenok.ftp.server.connector.DefaultFtpConnector;
 import ahodanenok.ftp.server.connector.FtpConnector;
 import ahodanenok.ftp.server.protocol.FtpProtocolInterpreter;
@@ -36,8 +37,9 @@ public final class FtpServer {
         protocolInterpreter.register("STOR", new StoreCommand(storage, dataReceiverFactory));
         protocolInterpreter.register("PORT", new PortCommand());
         protocolInterpreter.register("DELE", new DeleteCommand(storage));
-        protocolInterpreter.register("TYPE", new TypeCommand());
-        protocolInterpreter.register("STRU", new StructureCommand());
+        protocolInterpreter.register("TYPE", new DataTypeCommand());
+        protocolInterpreter.register("STRU", new StructureTypeCommand());
+        protocolInterpreter.register("MODE", new TransferModeCommand());
 
         FtpConnector connector = new DefaultFtpConnector(commandParser, protocolInterpreter);
         connector.activate();

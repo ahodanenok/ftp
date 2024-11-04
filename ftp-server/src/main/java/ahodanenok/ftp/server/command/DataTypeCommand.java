@@ -8,7 +8,7 @@ import ahodanenok.ftp.server.response.ResponseWriter;
 import ahodanenok.ftp.server.session.FtpSession;
 import ahodanenok.ftp.server.transfer.DataType;
 
-public final class TypeCommand implements FtpCommand {
+public final class DataTypeCommand implements FtpCommand {
 
     @Override
     public void handle(FtpRequest request, FtpCommandExecution execution) throws Exception {
