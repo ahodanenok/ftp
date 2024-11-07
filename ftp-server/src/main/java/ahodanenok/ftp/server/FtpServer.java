@@ -2,6 +2,8 @@ package ahodanenok.ftp.server;
 
 import java.util.concurrent.Executors;
 
+import ahodanenok.ftp.server.config.FtpConfig;
+import ahodanenok.ftp.server.config.PropertiesFileFtpConfigProvider;
 import ahodanenok.ftp.server.command.DataTypeCommand;
 import ahodanenok.ftp.server.command.DeleteCommand;
 import ahodanenok.ftp.server.command.NameListCommand;
@@ -25,6 +27,10 @@ import ahodanenok.ftp.server.transfer.receive.DefaultDataReceiverFactory;
 public final class FtpServer {
 
     public static void main(String... args) throws Exception {
+        PropertiesFileFtpConfigProvider configProvider =
+            new PropertiesFileFtpConfigProvider("./config.properties");
+        FtpConfig config = configProvider.get();
+
         FileStorage storage = new FileSystemFileStorage("D:/ftp-storage");
         FtpCommandParser commandParser = new DefaultFtpCommandParser();
         DataSenderFactory dataSenderFactory = new DefaultDataSenderFactory();
