@@ -1,5 +1,6 @@
 package ahodanenok.ftp.server;
 
+import java.net.InetAddress;
 import java.util.concurrent.Executors;
 
 import ahodanenok.ftp.server.config.FtpConfig;
@@ -47,7 +48,9 @@ public final class FtpServer {
         protocolInterpreter.register("STRU", new StructureTypeCommand());
         protocolInterpreter.register("MODE", new TransferModeCommand());
 
-        FtpConnector connector = new DefaultFtpConnector(commandParser, protocolInterpreter);
+        DefaultFtpConnector connector = new DefaultFtpConnector(commandParser, protocolInterpreter);
+        connector.setHost(InetAddress.getByName(config.getString("connector.host", "localhost")));
+        connector.setPort(config.getInteger("connector.port", 21)); // todo: 20 - data port
         connector.activate();
     }
 }

@@ -17,6 +17,12 @@ public final class DefaultFtpConfig implements FtpConfig {
     }
 
     @Override
+    public String getString(String name, String defaultValue) {
+        String value = getString(name);
+        return value != null ? value : defaultValue;
+    }
+
+    @Override
     public Integer getInteger(String name) {
         Object value = properties.get(name);
         if (value == null) {
@@ -33,5 +39,11 @@ public final class DefaultFtpConfig implements FtpConfig {
                 "Value of type '%s' can't be converted to integer",
                 value.getClass().getName()));
         }
+    }
+
+    @Override
+    public Integer getInteger(String name, Integer defaultValue) {
+        Integer value = getInteger(name);
+        return value != null ? value : defaultValue;
     }
 }

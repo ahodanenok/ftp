@@ -23,9 +23,20 @@ public final class DefaultFtpConnector implements FtpConnector {
     private final FtpCommandParser commandParser;
     private final FtpProtocolInterpreter protocolInterpreter;
 
+    private InetAddress host;
+    private int port;
+
     public DefaultFtpConnector(FtpCommandParser commandParser, FtpProtocolInterpreter protocolInterpreter) {
         this.commandParser = commandParser;
         this.protocolInterpreter = protocolInterpreter;
+    }
+
+    public void setHost(InetAddress host) {
+        this.host = host;
+    }
+
+    public void setPort(int port) {
+        this.port = port;
     }
 
     @Override
@@ -38,12 +49,10 @@ public final class DefaultFtpConnector implements FtpConnector {
     }
 
     private void doActivate() throws Exception {
-        // todo: make configurable
-        InetAddress bindAddress = InetAddress.getLocalHost();
-        // todo: allow concurrency
-        ServerSocket serverSocket = new ServerSocket(10450);//, 1, bindAddress);
+        ServerSocket serverSocket = new ServerSocket(port, 100, host);
         Socket socket = serverSocket.accept();
 
+        // todo: move execution to another thread
         DefaultFtpSession session = new DefaultFtpSession(
             new TcpSocketControlConnection(socket), new TcpSocketDataConnection());
 
