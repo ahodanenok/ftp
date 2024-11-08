@@ -32,7 +32,12 @@ public final class FtpServer {
             new PropertiesFileFtpConfigProvider("./config.properties");
         FtpConfig config = configProvider.get();
 
-        FileStorage storage = new FileSystemFileStorage("D:/ftp-storage");
+        String storageRoot = config.getString("storage.fs.root");
+        if (storageRoot == null) {
+            throw new IllegalStateException("Storage root is not defined");
+        }
+
+        FileStorage storage = new FileSystemFileStorage(storageRoot);
         FtpCommandParser commandParser = new DefaultFtpCommandParser();
         DataSenderFactory dataSenderFactory = new DefaultDataSenderFactory();
         DataReceiverFactory dataReceiverFactory = new DefaultDataReceiverFactory();
