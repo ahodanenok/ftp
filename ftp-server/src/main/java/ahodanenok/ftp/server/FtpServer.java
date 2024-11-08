@@ -54,8 +54,12 @@ public final class FtpServer {
         protocolInterpreter.register("MODE", new TransferModeCommand());
 
         DefaultFtpConnector connector = new DefaultFtpConnector(commandParser, protocolInterpreter);
-        connector.setHost(InetAddress.getByName(config.getString("connector.host", "localhost")));
-        connector.setPort(config.getInteger("connector.port", 21)); // todo: 20 - data port
+        connector.setControlHost(InetAddress.getByName(config.getString("connector.control.host", "localhost")));
+        connector.setControlPort(config.getInteger("connector.control.port", 21));
+        connector.setDataHost(InetAddress.getByName(config.getString("connector.data.host", "localhost")));
+        connector.setDataPortsRange(
+            config.getInteger("connector.data.ports-range-start", 40000),
+            config.getInteger("connector.data.ports-range-end", 41000));
         connector.activate();
     }
 }

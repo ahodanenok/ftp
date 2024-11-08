@@ -11,7 +11,7 @@ public interface DataConnection extends AutoCloseable {
 
     OutputStream getOutputStream() throws IOException;
 
-    void setHostPort(InetAddress host, int port) throws IOException;
+    void setRemoteHostPort(InetAddress host, int port) throws IOException;
 
     boolean isOpened();
 

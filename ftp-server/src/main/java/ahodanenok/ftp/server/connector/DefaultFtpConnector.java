@@ -7,6 +7,7 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+import ahodanenok.ftp.server.connection.DataPorts;
 import ahodanenok.ftp.server.connection.TcpSocketControlConnection;
 import ahodanenok.ftp.server.connection.TcpSocketDataConnection;
 import ahodanenok.ftp.server.protocol.FtpProtocolInterpreter;
@@ -23,20 +24,30 @@ public final class DefaultFtpConnector implements FtpConnector {
     private final FtpCommandParser commandParser;
     private final FtpProtocolInterpreter protocolInterpreter;
 
-    private InetAddress host;
-    private int port;
+    private InetAddress controlHost;
+    private int controlPort;
+    private InetAddress dataHost;
+    private DataPorts dataPorts;
 
     public DefaultFtpConnector(FtpCommandParser commandParser, FtpProtocolInterpreter protocolInterpreter) {
         this.commandParser = commandParser;
         this.protocolInterpreter = protocolInterpreter;
     }
 
-    public void setHost(InetAddress host) {
-        this.host = host;
+    public void setControlHost(InetAddress host) {
+        this.controlHost = host;
     }
 
-    public void setPort(int port) {
-        this.port = port;
+    public void setControlPort(int port) {
+        this.controlPort = port;
+    }
+
+    public void setDataHost(InetAddress host) {
+        this.dataHost = host;
+    }
+
+    public void setDataPortsRange(int portsRangeStart, int portsRangeEnd) {
+        this.dataPorts = new DataPorts(portsRangeStart, portsRangeEnd);
     }
 
     @Override
@@ -49,12 +60,17 @@ public final class DefaultFtpConnector implements FtpConnector {
     }
 
     private void doActivate() throws Exception {
-        ServerSocket serverSocket = new ServerSocket(port, 100, host);
+        ServerSocket serverSocket = new ServerSocket(controlPort, 100, controlHost);
         Socket socket = serverSocket.accept();
 
         // todo: move execution to another thread
         DefaultFtpSession session = new DefaultFtpSession(
-            new TcpSocketControlConnection(socket), new TcpSocketDataConnection());
+            new TcpSocketControlConnection(socket),
+            new TcpSocketDataConnection(
+                socket.getInetAddress(),
+                socket.getPort() - 1,
+                dataHost,
+                dataPorts));
 
         BufferedReader reader = new BufferedReader(
             new InputStreamReader(socket.getInputStream(), "US-ASCII"));
