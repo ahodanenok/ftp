@@ -13,28 +13,44 @@ public final class PortCommand implements FtpCommand {
         FtpSession session = request.getSession();
         // todo: 530 Not logged in.
 
-        // todo: check has one argument
+        if (request.getArgumentCount() != 1) {
+            session.getResponseWriter().write(FtpReply.CODE_501);
+            return;
+        }
+
         String hostPort = request.getArgument(0);
         String[] parts = hostPort.split(",");
         if (parts.length != 6) {
-            // todo: 501 Syntax error in parameters or arguments.
+            session.getResponseWriter().write(FtpReply.CODE_501);
+            return;
         }
 
-        InetAddress host = InetAddress.getByAddress(new byte[] {
-            parseByte(parts[0]),
-            parseByte(parts[1]),
-            parseByte(parts[2]),
-            parseByte(parts[3])
-        });
-        int port = (parseByte(parts[4]) << 8) | parseByte(parts[5]);
+        InetAddress host;
+        int port;
+        try {
+            host = InetAddress.getByAddress(new byte[] {
+                (byte) parseByte(parts[0]),
+                (byte) parseByte(parts[1]),
+                (byte) parseByte(parts[2]),
+                (byte) parseByte(parts[3])
+            });
+            port = (parseByte(parts[4]) << 8) | parseByte(parts[5]);
+        } catch (NumberFormatException e) {
+            session.getResponseWriter().write(FtpReply.CODE_501);
+            return;
+        }
 
         session.getDataConnection().setRemoteHostPort(host, port);
         session.getResponseWriter().write(FtpReply.CODE_200);
     }
 
     // todo: move to utils?
-    private byte parseByte(String s) {
-        // todo: 501 Syntax error in parameters or arguments.
-        return Byte.parseByte(s);
+    private int parseByte(String s) {
+        int b = Integer.parseInt(s);
+        if (b < 0 || b > 255) {
+            throw new NumberFormatException(s);
+        }
+
+        return b;
     }
 }
