@@ -13,6 +13,12 @@ public interface DataConnection extends AutoCloseable {
 
     void setRemoteHostPort(InetAddress host, int port) throws IOException;
 
+    void setPassiveMode() throws IOException;
+
+    InetAddress getLocalHost();
+
+    int getLocalPort();
+
     boolean isOpened();
 
     void open() throws IOException;

@@ -4,9 +4,11 @@ import java.io.IOException;
 
 public interface ResponseWriter {
 
-    void write(FtpReply reply) throws IOException;
+    default void write(FtpReply reply) throws IOException {
+        write(reply.getCode(), reply.getDescription());
+    }
 
-    // void write(FtpReply reply, String description);
+    void write(int code, String description) throws IOException;
 
     //
     // void writeStart(FtpReply reply);
