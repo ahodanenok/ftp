@@ -24,7 +24,7 @@ public final class FileSystemFileStorage implements FileStorage {
 
     @Override
     public Stream<String> names(String path) throws FileStorageException {
-        Path targetPath = rootDir.resolve(path);
+        Path targetPath = resolvePath(path);
         try {
             return Files.list(targetPath)
                 .map(p -> p.getFileName().toString());
@@ -35,7 +35,7 @@ public final class FileSystemFileStorage implements FileStorage {
 
     @Override
     public InputStream read(String path) throws FileStorageException {
-        Path targetPath = rootDir.resolve(path);
+        Path targetPath = resolvePath(path);
         try {
             return Files.newInputStream(targetPath);
         } catch (IOException e) {
@@ -45,7 +45,7 @@ public final class FileSystemFileStorage implements FileStorage {
 
     @Override
     public OutputStream write(String path) throws FileStorageException {
-        Path targetPath = rootDir.resolve(path);
+        Path targetPath = resolvePath(path);
         try {
             return Files.newOutputStream(targetPath);
         } catch (IOException e) {
@@ -66,10 +66,17 @@ public final class FileSystemFileStorage implements FileStorage {
     }
 
     private Path resolvePath(String path) throws FileStorageException {
+        Path fullPath;
         try {
-            return rootDir.resolve(path);
+            fullPath = rootDir.resolve(path).normalize();
         } catch (InvalidPathException e) {
             throw new FilePathInvalidException(path, e);
         }
+
+        if (!fullPath.startsWith(rootDir)) {
+            throw new FilePathInvalidException(path);
+        }
+
+        return fullPath;
     }
 }
