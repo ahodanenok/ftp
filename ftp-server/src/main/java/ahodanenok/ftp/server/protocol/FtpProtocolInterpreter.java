@@ -33,6 +33,17 @@ public final class FtpProtocolInterpreter {
         commands.put(normalizedName, command);
     }
 
+    public boolean acceptNewSession(FtpSession session) {
+        try {
+            session.getResponseWriter().write(FtpReply.CODE_220);
+            return true;
+        } catch (Throwable e) {
+            e.printStackTrace(); // todo: log error
+            IOUtils.closeSilently(session.getControlConnection());
+            return false;
+        }
+    }
+
     public void process(FtpRequest request) {
         try {
             doProcess(request);

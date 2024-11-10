@@ -72,6 +72,11 @@ public final class DefaultFtpConnector implements FtpConnector {
                 dataHost,
                 dataPorts));
 
+        if (!protocolInterpreter.acceptNewSession(session)) {
+            socket.close();
+            return;
+        }
+
         BufferedReader reader = new BufferedReader(
             new InputStreamReader(socket.getInputStream(), "US-ASCII"));
         while (true) {
