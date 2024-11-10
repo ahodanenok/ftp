@@ -46,10 +46,19 @@ public final class FileSystemFileStorage implements FileStorage {
     @Override
     public OutputStream write(String path) throws FileStorageException {
         Path targetPath = resolvePath(path);
+
+        try {
+            Files.createDirectories(targetPath.getParent());
+        } catch (IOException e) {
+            throw new FileStorageException(String.format(
+                "Can't create directories for path '%s'", targetPath));
+        }
+
         try {
             return Files.newOutputStream(targetPath);
         } catch (IOException e) {
-            throw new FileStorageException(String.format("Can't write to path '%s'", targetPath), e);
+            throw new FileStorageException(
+                String.format("Can't write to path '%s'", targetPath), e);
         }
     }
 
