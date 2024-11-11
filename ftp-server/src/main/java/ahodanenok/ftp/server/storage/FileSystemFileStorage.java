@@ -16,15 +16,22 @@ import ahodanenok.ftp.server.storage.exception.FileStorageException;
 
 public final class FileSystemFileStorage implements FileStorage {
 
-    private final Path rootDir;
+    private final Path storageRoot;
 
-    public FileSystemFileStorage(String rootDir) {
-        this.rootDir = Paths.get(rootDir);
+    public FileSystemFileStorage(String storageRoot) {
+        this.storageRoot = Paths.get(storageRoot);
+    }
+
+    @Override
+    public String resolvePath(String parent, String path) throws FileStorageException {
+        Path parentPath = resolvePathInternal(storageRoot, parent);
+        Path targetPath = resolvePathInternal(parentPath, path);
+        return storageRoot.relativize(targetPath).toString();
     }
 
     @Override
     public Stream<String> names(String path) throws FileStorageException {
-        Path targetPath = resolvePath(path);
+        Path targetPath = resolvePathInternal(storageRoot, path);
         try {
             return Files.list(targetPath)
                 .map(p -> p.getFileName().toString());
@@ -35,7 +42,7 @@ public final class FileSystemFileStorage implements FileStorage {
 
     @Override
     public InputStream read(String path) throws FileStorageException {
-        Path targetPath = resolvePath(path);
+        Path targetPath = resolvePathInternal(storageRoot, path);
         try {
             return Files.newInputStream(targetPath);
         } catch (IOException e) {
@@ -45,15 +52,13 @@ public final class FileSystemFileStorage implements FileStorage {
 
     @Override
     public OutputStream write(String path) throws FileStorageException {
-        Path targetPath = resolvePath(path);
-
+        Path targetPath = resolvePathInternal(storageRoot, path);
         try {
             Files.createDirectories(targetPath.getParent());
         } catch (IOException e) {
             throw new FileStorageException(String.format(
                 "Can't create directories for path '%s'", targetPath));
         }
-
         try {
             return Files.newOutputStream(targetPath);
         } catch (IOException e) {
@@ -64,7 +69,7 @@ public final class FileSystemFileStorage implements FileStorage {
 
     @Override
     public void delete(String path) throws FileStorageException {
-        Path targetPath = resolvePath(path);
+        Path targetPath = resolvePathInternal(storageRoot, path);
         try {
             Files.delete(targetPath);
         } catch (NoSuchFileException e) {
@@ -74,16 +79,22 @@ public final class FileSystemFileStorage implements FileStorage {
         }
     }
 
-    private Path resolvePath(String path) throws FileStorageException {
+    private Path resolvePathInternal(Path root, String pathStr) throws FileStorageException {
         Path fullPath;
         try {
-            fullPath = rootDir.resolve(path).normalize();
+            Path path = Path.of(pathStr);
+            if (path.getRoot() != null) {
+                path = path.getRoot().relativize(path);
+                fullPath = storageRoot.resolve(path).normalize();
+            } else {
+                fullPath = root.resolve(path).normalize();
+            }
         } catch (InvalidPathException e) {
-            throw new FilePathInvalidException(path, e);
+            throw new FilePathInvalidException(pathStr, e);
         }
 
-        if (!fullPath.startsWith(rootDir)) {
-            throw new FilePathInvalidException(path);
+        if (!fullPath.startsWith(storageRoot)) {
+            throw new FilePathInvalidException(pathStr);
         }
 
         return fullPath;

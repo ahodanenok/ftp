@@ -15,6 +15,8 @@ public interface FtpSession {
 
     String getCurrentDirectory();
 
+    void setCurrentDirectory(String path);
+
     ControlConnection getControlConnection();
 
     DataConnection getDataConnection();

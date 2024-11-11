@@ -8,6 +8,8 @@ import ahodanenok.ftp.server.storage.exception.FileStorageException;
 
 public interface FileStorage {
 
+    String resolvePath(String parent, String path) throws FileStorageException;
+
     Stream<String> names(String path) throws FileStorageException;
 
     InputStream read(String path) throws FileStorageException;

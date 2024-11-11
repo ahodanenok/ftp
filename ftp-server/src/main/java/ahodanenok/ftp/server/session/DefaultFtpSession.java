@@ -23,6 +23,7 @@ public final class DefaultFtpSession implements FtpSession {
     private DataType dataType = DataType.ASCII;
     private StructureType structureType = StructureType.FILE;
     private TransferMode transferMode = TransferMode.STREAM;
+    private String currentDirectory = "";
 
     public DefaultFtpSession(ControlConnection controlConnection, DataConnection dataConnection) throws IOException {
         this.controlConnection = controlConnection;
@@ -32,7 +33,12 @@ public final class DefaultFtpSession implements FtpSession {
 
     @Override
     public String getCurrentDirectory() {
-        return "";
+        return currentDirectory;
+    }
+
+    @Override
+    public void setCurrentDirectory(String path) {
+        this.currentDirectory = path;
     }
 
     @Override
