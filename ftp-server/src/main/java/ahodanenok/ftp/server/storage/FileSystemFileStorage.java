@@ -23,6 +23,21 @@ public final class FileSystemFileStorage implements FileStorage {
     }
 
     @Override
+    public String getParentPath(String path) throws FileStorageException {
+        Path targetPath = resolvePathInternal(storageRoot, path);
+        if (targetPath.equals(storageRoot)) {
+            return "";
+        }
+
+        Path parentPath = targetPath.getParent();
+        if (parentPath == null) {
+            return "";
+        }
+
+        return storageRoot.relativize(parentPath).toString();
+    }
+
+    @Override
     public String resolvePath(String parent, String path) throws FileStorageException {
         Path parentPath = resolvePathInternal(storageRoot, parent);
         Path targetPath = resolvePathInternal(parentPath, path);
