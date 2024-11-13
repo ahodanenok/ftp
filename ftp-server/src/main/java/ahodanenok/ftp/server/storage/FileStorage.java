@@ -18,5 +18,7 @@ public interface FileStorage {
 
     OutputStream write(String path) throws FileStorageException;
 
+    String createDirectory(String parent, String path) throws FileStorageException;
+
     void delete(String path) throws FileStorageException;
 }

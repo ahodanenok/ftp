@@ -36,14 +36,14 @@ public final class FileSystemFileStorage implements FileStorage {
             return pathSeparator;
         }
 
-        return pathSeparator + storageRoot.relativize(parentPath).toString();
+        return pathToString(parentPath);
     }
 
     @Override
     public String resolvePath(String parent, String path) throws FileStorageException {
         Path parentPath = resolvePathInternal(storageRoot, parent);
         Path targetPath = resolvePathInternal(parentPath, path);
-        return pathSeparator + storageRoot.relativize(targetPath).toString();
+        return pathToString(targetPath);
     }
 
     @Override
@@ -85,6 +85,24 @@ public final class FileSystemFileStorage implements FileStorage {
     }
 
     @Override
+    public String createDirectory(String parent, String path) throws FileStorageException {
+        Path parentPath = resolvePathInternal(storageRoot, parent);
+        Path targetPath = resolvePathInternal(parentPath, path);
+        if (Files.exists(targetPath)) {
+            throw new FileStorageException(String.format("Path '%s' already exists", path));
+        }
+
+        try {
+            Files.createDirectories(targetPath);
+        } catch (IOException e) {
+            throw new FileStorageException(
+                String.format("Can't create a directory at path '%s'", path), e);
+        }
+
+        return pathToString(targetPath);
+    }
+
+    @Override
     public void delete(String path) throws FileStorageException {
         Path targetPath = resolvePathInternal(storageRoot, path);
         try {
@@ -94,6 +112,10 @@ public final class FileSystemFileStorage implements FileStorage {
         } catch (IOException e) {
             throw new FileStorageException(String.format("Can't delete file '%s'", targetPath), e);
         }
+    }
+
+    private String pathToString(Path path) {
+        return pathSeparator + storageRoot.relativize(path).toString();
     }
 
     private Path resolvePathInternal(Path root, String pathStr) throws FileStorageException {

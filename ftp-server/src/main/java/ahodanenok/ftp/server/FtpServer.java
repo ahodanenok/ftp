@@ -9,6 +9,7 @@ import ahodanenok.ftp.server.command.ChangeToParentDirectoryCommand;
 import ahodanenok.ftp.server.command.ChangeWorkingDirectoryCommand;
 import ahodanenok.ftp.server.command.DataTypeCommand;
 import ahodanenok.ftp.server.command.DeleteCommand;
+import ahodanenok.ftp.server.command.MakeDirectoryCommand;
 import ahodanenok.ftp.server.command.NameListCommand;
 import ahodanenok.ftp.server.command.PassiveModeCommand;
 import ahodanenok.ftp.server.command.PortCommand;
@@ -59,6 +60,7 @@ public final class FtpServer {
         protocolInterpreter.register("CWD", new ChangeWorkingDirectoryCommand(storage));
         protocolInterpreter.register("CDUP", new ChangeToParentDirectoryCommand(storage));
         protocolInterpreter.register("PWD", new PrintWorkingDirectoryCommand());
+        protocolInterpreter.register("MKD", new MakeDirectoryCommand(storage));
 
         DefaultFtpConnector connector = new DefaultFtpConnector(commandParser, protocolInterpreter);
         connector.setControlHost(InetAddress.getByName(config.getString("connector.control.host", "localhost")));
