@@ -24,7 +24,7 @@ public final class ChangeToParentDirectoryCommand implements FtpCommand {
         // todo: 530 Not logged in.
 
         if (request.getArgumentCount() > 0) {
-            session.getResponseWriter().write(FtpReply.CODE_501);
+            responseWriter.write(FtpReply.CODE_501);
             return;
         }
 
@@ -38,7 +38,8 @@ public final class ChangeToParentDirectoryCommand implements FtpCommand {
         }
 
         session.setCurrentDirectory(newWorkingDirectory);
-        responseWriter.write(FtpReply.CODE_250);
-        System.out.println("!!! " + session.getCurrentDirectory());
+        responseWriter.write(
+            FtpReply.CODE_250.getCode(),
+            String.format("directory changed to \"%s\"", session.getCurrentDirectory()));
     }
 }

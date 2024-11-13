@@ -8,6 +8,7 @@ public enum FtpReply {
     CODE_220(220, "Service ready for new user."),
     CODE_226(226, "Closing data connection."),
     CODE_227(227, "Entering Passive Mode (h1,h2,h3,h4,p1,p2)."),
+    CODE_257(257, "\"PATHNAME\" created."),
     CODE_250(250, "Requested file action okay, completed."),
     CODE_425(425, "Can't open data connection."),
     CODE_426(426, "Connection closed; transfer aborted."),

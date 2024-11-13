@@ -24,7 +24,7 @@ public final class ChangeWorkingDirectoryCommand implements FtpCommand {
         // todo: 530 Not logged in.
 
         if (request.getArgumentCount() != 1) {
-            session.getResponseWriter().write(FtpReply.CODE_501);
+            responseWriter.write(FtpReply.CODE_501);
             return;
         }
 
@@ -44,6 +44,8 @@ public final class ChangeWorkingDirectoryCommand implements FtpCommand {
         }
 
         session.setCurrentDirectory(newWorkingDirectory);
-        responseWriter.write(FtpReply.CODE_250);
+        responseWriter.write(
+            FtpReply.CODE_250.getCode(),
+            String.format("directory changed to \"%s\"", session.getCurrentDirectory()));
     }
 }

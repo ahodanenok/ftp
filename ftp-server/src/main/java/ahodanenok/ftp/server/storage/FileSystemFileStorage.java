@@ -17,31 +17,33 @@ import ahodanenok.ftp.server.storage.exception.FileStorageException;
 public final class FileSystemFileStorage implements FileStorage {
 
     private final Path storageRoot;
+    private final String pathSeparator;
 
     public FileSystemFileStorage(String storageRoot) {
         this.storageRoot = Paths.get(storageRoot);
+        this.pathSeparator = this.storageRoot.getFileSystem().getSeparator();
     }
 
     @Override
     public String getParentPath(String path) throws FileStorageException {
         Path targetPath = resolvePathInternal(storageRoot, path);
         if (targetPath.equals(storageRoot)) {
-            return "";
+            return pathSeparator;
         }
 
         Path parentPath = targetPath.getParent();
         if (parentPath == null) {
-            return "";
+            return pathSeparator;
         }
 
-        return storageRoot.relativize(parentPath).toString();
+        return pathSeparator + storageRoot.relativize(parentPath).toString();
     }
 
     @Override
     public String resolvePath(String parent, String path) throws FileStorageException {
         Path parentPath = resolvePathInternal(storageRoot, parent);
         Path targetPath = resolvePathInternal(parentPath, path);
-        return storageRoot.relativize(targetPath).toString();
+        return pathSeparator + storageRoot.relativize(targetPath).toString();
     }
 
     @Override
