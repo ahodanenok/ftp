@@ -8,7 +8,8 @@ import ahodanenok.ftp.server.config.PropertiesFileFtpConfigProvider;
 import ahodanenok.ftp.server.command.ChangeToParentDirectoryCommand;
 import ahodanenok.ftp.server.command.ChangeWorkingDirectoryCommand;
 import ahodanenok.ftp.server.command.DataTypeCommand;
-import ahodanenok.ftp.server.command.DeleteCommand;
+import ahodanenok.ftp.server.command.DeleteDirectoryCommand;
+import ahodanenok.ftp.server.command.DeleteFileCommand;
 import ahodanenok.ftp.server.command.MakeDirectoryCommand;
 import ahodanenok.ftp.server.command.NameListCommand;
 import ahodanenok.ftp.server.command.PassiveModeCommand;
@@ -52,7 +53,7 @@ public final class FtpServer {
         protocolInterpreter.register("RETR", new RetrieveCommand(storage, dataSenderFactory));
         protocolInterpreter.register("STOR", new StoreCommand(storage, dataReceiverFactory));
         protocolInterpreter.register("PORT", new PortCommand());
-        protocolInterpreter.register("DELE", new DeleteCommand(storage));
+        protocolInterpreter.register("DELE", new DeleteFileCommand(storage));
         protocolInterpreter.register("TYPE", new DataTypeCommand());
         protocolInterpreter.register("STRU", new StructureTypeCommand());
         protocolInterpreter.register("MODE", new TransferModeCommand());
@@ -61,6 +62,7 @@ public final class FtpServer {
         protocolInterpreter.register("CDUP", new ChangeToParentDirectoryCommand(storage));
         protocolInterpreter.register("PWD", new PrintWorkingDirectoryCommand());
         protocolInterpreter.register("MKD", new MakeDirectoryCommand(storage));
+        protocolInterpreter.register("RMD", new DeleteDirectoryCommand(storage));
 
         DefaultFtpConnector connector = new DefaultFtpConnector(commandParser, protocolInterpreter);
         connector.setControlHost(InetAddress.getByName(config.getString("connector.control.host", "localhost")));

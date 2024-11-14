@@ -103,12 +103,43 @@ public final class FileSystemFileStorage implements FileStorage {
     }
 
     @Override
-    public void delete(String path) throws FileStorageException {
-        Path targetPath = resolvePathInternal(storageRoot, path);
+    public void deleteDirectory(String parent, String path) throws FileStorageException {
+        Path parentPath = resolvePathInternal(storageRoot, parent);
+        Path targetPath = resolvePathInternal(parentPath, path);
+
+        if (!Files.exists(targetPath)) {
+            return;
+        }
+
+        if (!Files.isDirectory(targetPath)) {
+            throw new FileStorageException(
+                String.format("Path '%s' is not a directory", pathToString(targetPath)));
+        }
+
         try {
             Files.delete(targetPath);
-        } catch (NoSuchFileException e) {
-            throw new FileNotFoundException(targetPath.toString(), e);
+        } catch (IOException e) {
+            throw new FileStorageException(
+                String.format("Can't delete directory '%s'", pathToString(targetPath)), e);
+        }
+    }
+
+    @Override
+    public void deleteFile(String parent, String path) throws FileStorageException {
+        Path parentPath = resolvePathInternal(storageRoot, parent);
+        Path targetPath = resolvePathInternal(parentPath, path);
+
+        if (!Files.exists(targetPath)) {
+            return;
+        }
+
+        if (!Files.isRegularFile(targetPath)) {
+            throw new FileStorageException(
+                String.format("Path '%s' is not a file", pathToString(targetPath)));
+        }
+
+        try {
+            Files.delete(targetPath);
         } catch (IOException e) {
             throw new FileStorageException(String.format("Can't delete file '%s'", targetPath), e);
         }

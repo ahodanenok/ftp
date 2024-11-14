@@ -8,11 +8,11 @@ import ahodanenok.ftp.server.storage.exception.FileNotFoundException;
 import ahodanenok.ftp.server.storage.exception.FilePathInvalidException;
 import ahodanenok.ftp.server.storage.exception.FileStorageException;
 
-public final class DeleteCommand implements FtpCommand {
+public final class DeleteFileCommand implements FtpCommand {
 
     private final FileStorage storage;
 
-    public DeleteCommand(FileStorage storage) {
+    public DeleteFileCommand(FileStorage storage) {
         this.storage = storage;
     }
 
@@ -28,7 +28,7 @@ public final class DeleteCommand implements FtpCommand {
 
         String path = request.getArgument(0);
         try {
-            storage.delete(path);
+            storage.deleteFile(session.getCurrentDirectory(), path);
             // todo: when to return "450  Requested file action not taken. File unavailable"?
         } catch (FilePathInvalidException e) {
             // todo: 553 Requested action not taken. File name not allowed.

@@ -20,5 +20,7 @@ public interface FileStorage {
 
     String createDirectory(String parent, String path) throws FileStorageException;
 
-    void delete(String path) throws FileStorageException;
+    void deleteDirectory(String parent, String path) throws FileStorageException;
+
+    void deleteFile(String parent, String path) throws FileStorageException;
 }
