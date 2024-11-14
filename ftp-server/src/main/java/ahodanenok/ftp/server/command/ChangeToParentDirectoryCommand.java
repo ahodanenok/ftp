@@ -21,7 +21,10 @@ public final class ChangeToParentDirectoryCommand implements FtpCommand {
     public void handle(FtpRequest request, FtpCommandExecution execution) throws Exception {
         FtpSession session = request.getSession();
         ResponseWriter responseWriter = session.getResponseWriter();
-        // todo: 530 Not logged in.
+        if (!session.isAuthenticated()) {
+            session.getResponseWriter().write(FtpReply.CODE_530);
+            return;
+        }
 
         if (request.getArgumentCount() > 0) {
             responseWriter.write(FtpReply.CODE_501);

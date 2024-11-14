@@ -20,10 +20,13 @@ import ahodanenok.ftp.server.command.RetrieveCommand;
 import ahodanenok.ftp.server.command.StoreCommand;
 import ahodanenok.ftp.server.command.StructureTypeCommand;
 import ahodanenok.ftp.server.command.TransferModeCommand;
+import ahodanenok.ftp.server.command.UserCommand;
 import ahodanenok.ftp.server.connector.DefaultFtpConnector;
 import ahodanenok.ftp.server.protocol.FtpProtocolInterpreter;
 import ahodanenok.ftp.server.request.DefaultFtpCommandParser;
 import ahodanenok.ftp.server.request.FtpCommandParser;
+import ahodanenok.ftp.server.security.DummyUserAuthenticator;
+import ahodanenok.ftp.server.security.UserAuthenticator;
 import ahodanenok.ftp.server.storage.FileStorage;
 import ahodanenok.ftp.server.storage.FileSystemFileStorage;
 import ahodanenok.ftp.server.transfer.send.DataSenderFactory;
@@ -48,6 +51,8 @@ public final class FtpServer {
         DataSenderFactory dataSenderFactory = new DefaultDataSenderFactory();
         DataReceiverFactory dataReceiverFactory = new DefaultDataReceiverFactory();
 
+        UserAuthenticator authenticator = new DummyUserAuthenticator();
+
         FtpProtocolInterpreter protocolInterpreter =
             new FtpProtocolInterpreter(Executors.newSingleThreadExecutor());
         protocolInterpreter.register("NLST", new NameListCommand(storage, dataSenderFactory));
@@ -65,6 +70,7 @@ public final class FtpServer {
         protocolInterpreter.register("MKD", new MakeDirectoryCommand(storage));
         protocolInterpreter.register("RMD", new DeleteDirectoryCommand(storage));
         protocolInterpreter.register("NOOP", new NoopCommand());
+        protocolInterpreter.register("USER", new UserCommand(authenticator));
 
         DefaultFtpConnector connector = new DefaultFtpConnector(commandParser, protocolInterpreter);
         connector.setControlHost(InetAddress.getByName(config.getString("connector.control.host", "localhost")));

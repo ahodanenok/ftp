@@ -11,6 +11,8 @@ import ahodanenok.ftp.server.connection.DataConnection;
 import ahodanenok.ftp.server.connection.ControlConnection;
 import ahodanenok.ftp.server.response.DefaultResponseWriter;
 import ahodanenok.ftp.server.response.ResponseWriter;
+import ahodanenok.ftp.server.security.AnonymousUser;
+import ahodanenok.ftp.server.security.User;
 import ahodanenok.ftp.server.transfer.DataType;
 import ahodanenok.ftp.server.transfer.StructureType;
 import ahodanenok.ftp.server.transfer.TransferMode;
@@ -24,11 +26,28 @@ public final class DefaultFtpSession implements FtpSession {
     private StructureType structureType = StructureType.FILE;
     private TransferMode transferMode = TransferMode.STREAM;
     private String currentDirectory = "";
+    private User user = AnonymousUser.INSTANCE;
 
     public DefaultFtpSession(ControlConnection controlConnection, DataConnection dataConnection) throws IOException {
         this.controlConnection = controlConnection;
         this.dataConnection = dataConnection;
         this.responseWriter = new DefaultResponseWriter(controlConnection.getOutputStream());
+    }
+
+    @Override
+    public boolean isAuthenticated() {
+        return !(user instanceof AnonymousUser);
+    }
+
+    @Override
+    public User getUser() {
+        return user;
+    }
+
+    @Override
+    public void setUser(User user) {
+        Objects.requireNonNull(user, "User can't be null");
+        this.user = user;
     }
 
     @Override

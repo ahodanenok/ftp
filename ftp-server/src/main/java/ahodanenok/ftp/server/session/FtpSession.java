@@ -7,11 +7,18 @@ import java.net.InetAddress;
 import ahodanenok.ftp.server.connection.ControlConnection;
 import ahodanenok.ftp.server.connection.DataConnection;
 import ahodanenok.ftp.server.response.ResponseWriter;
+import ahodanenok.ftp.server.security.User;
 import ahodanenok.ftp.server.transfer.DataType;
 import ahodanenok.ftp.server.transfer.StructureType;
 import ahodanenok.ftp.server.transfer.TransferMode;
 
 public interface FtpSession {
+
+    boolean isAuthenticated();
+
+    User getUser();
+
+    void setUser(User user);
 
     String getCurrentDirectory();
 

@@ -8,6 +8,7 @@ public enum FtpReply {
     CODE_220(220, "Service ready for new user."),
     CODE_226(226, "Closing data connection."),
     CODE_227(227, "Entering Passive Mode (h1,h2,h3,h4,p1,p2)."),
+    CODE_230(230, "User logged in, proceed."),
     CODE_257(257, "\"PATHNAME\" created."),
     CODE_250(250, "Requested file action okay, completed."),
     CODE_425(425, "Can't open data connection."),
@@ -16,6 +17,7 @@ public enum FtpReply {
     CODE_500(500, "Syntax error, command unrecognized."),
     CODE_501(501, "Syntax error in parameters or arguments."),
     CODE_504(504, "Command not implemented for that parameter."),
+    CODE_530(530, "Not logged in."),
     CODE_550(550, "Requested action not taken.");
 
     private final int code;

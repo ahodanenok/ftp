@@ -26,7 +26,10 @@ public final class StoreCommand implements FtpCommand {
     public void handle(FtpRequest request, FtpCommandExecution execution) throws Exception {
         FtpSession session = request.getSession();
         ResponseWriter responseWriter = session.getResponseWriter();
-        // todo: 530 Not logged in.
+        if (!session.isAuthenticated()) {
+            session.getResponseWriter().write(FtpReply.CODE_530);
+            return;
+        }
         // todo: 532 Need account for storing files.
 
         // todo: check exactly one argument

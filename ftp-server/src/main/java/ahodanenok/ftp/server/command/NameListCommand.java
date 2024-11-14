@@ -26,7 +26,10 @@ public final class NameListCommand implements FtpCommand {
     public void handle(FtpRequest request, FtpCommandExecution execution) throws Exception {
         FtpSession session = request.getSession();
         ResponseWriter responseWriter = session.getResponseWriter();
-        // todo: 530 Not logged in.
+        if (!session.isAuthenticated()) {
+            session.getResponseWriter().write(FtpReply.CODE_530);
+            return;
+        }
 
         String path;
         // todo: 501 Syntax error in parameters or arguments.

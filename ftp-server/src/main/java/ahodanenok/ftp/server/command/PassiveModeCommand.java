@@ -12,6 +12,11 @@ public final class PassiveModeCommand implements FtpCommand {
     @Override
     public void handle(FtpRequest request, FtpCommandExecution execution) throws Exception {
         FtpSession session = request.getSession();
+        if (!session.isAuthenticated()) {
+            session.getResponseWriter().write(FtpReply.CODE_530);
+            return;
+        }
+
         session.getDataConnection().setPassiveMode();
         InetAddress host = session.getDataConnection().getLocalHost();
         int port = session.getDataConnection().getLocalPort();
