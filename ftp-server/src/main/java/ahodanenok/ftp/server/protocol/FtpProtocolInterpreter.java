@@ -9,6 +9,7 @@ import ahodanenok.ftp.server.command.FtpCommand;
 import ahodanenok.ftp.server.command.FtpCommandExecution;
 import ahodanenok.ftp.server.request.FtpRequest;
 import ahodanenok.ftp.server.response.FtpReply;
+import ahodanenok.ftp.server.security.AnonymousUser;
 import ahodanenok.ftp.server.session.FtpSession;
 import ahodanenok.ftp.server.utils.IOUtils;
 
@@ -62,6 +63,7 @@ public final class FtpProtocolInterpreter {
         String commandName = request.getCommandName().toUpperCase();
         switch (commandName) {
             case "ABOR" -> executeAbortCommand(request);
+            case "QUIT" -> executeQuitCommand(request);
             default -> executeCommand(request, commandName);
         }
     }
@@ -84,6 +86,27 @@ public final class FtpProtocolInterpreter {
         completed.await();
         session.getDataConnection().close();
         session.getResponseWriter().write(FtpReply.CODE_226);
+        clearCurrentExecution();
+    }
+
+    private void executeQuitCommand(FtpRequest request) throws Exception {
+        FtpSession session = request.getSession();
+        session.setUser(AnonymousUser.INSTANCE);
+
+        CountDownLatch completed = null;
+        synchronized (this) {
+            if (currentExecution != null) {
+                completed = currentExecution.completed;
+            }
+        }
+
+        // todo: handle interrupted exception?
+        if (completed != null) {
+            completed.await();
+        }
+        session.getDataConnection().close();
+        session.getResponseWriter().write(FtpReply.CODE_221);
+        session.getControlConnection().close();
         clearCurrentExecution();
     }
 

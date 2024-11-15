@@ -60,10 +60,16 @@ public final class DefaultFtpConnector implements FtpConnector {
     }
 
     private void doActivate() throws Exception {
+        // todo: close socket on shutdown
         ServerSocket serverSocket = new ServerSocket(controlPort, 100, controlHost);
-        Socket socket = serverSocket.accept();
+        while (true) {
+            Socket socket = serverSocket.accept();
+            // todo: move execution to another thread
+            handleConnection(socket);
+        }
+    }
 
-        // todo: move execution to another thread
+    private void handleConnection(Socket socket) throws Exception {
         DefaultFtpSession session = new DefaultFtpSession(
             new TcpSocketControlConnection(socket),
             new TcpSocketDataConnection(
@@ -79,7 +85,7 @@ public final class DefaultFtpConnector implements FtpConnector {
 
         BufferedReader reader = new BufferedReader(
             new InputStreamReader(socket.getInputStream(), "US-ASCII"));
-        while (true) {
+        while (!socket.isClosed()) {
             // todo: read manually?
             // line could be of an indefinite size and only \r\n sequence must separate commands
             String command = reader.readLine();

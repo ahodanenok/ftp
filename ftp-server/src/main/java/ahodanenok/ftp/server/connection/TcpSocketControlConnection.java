@@ -20,6 +20,6 @@ public final class TcpSocketControlConnection implements ControlConnection {
 
     @Override
     public void close() throws IOException {
-        // todo: impl
+        socket.close();
     }
 }
